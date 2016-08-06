@@ -1,0 +1,15 @@
+# This file contains pkgconfig build requirements that get picked up
+# but are undesirable. One entry per line, no whitespace.
+1.10.2
+caca
+lua
+Qt5Core
+Qt5Gui
+Qt5Network
+Qt5Svg
+Qt5PrintSupport
+QtCore
+QtGui
+QtNetwork
+QtSvg
+libcerf
