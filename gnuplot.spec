@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.0.4
-Release  : 3
+Release  : 4
 URL      : http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.4/gnuplot-5.0.4.tar.gz
 Source0  : http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.4/gnuplot-5.0.4.tar.gz
 Summary  : No detailed summary available
@@ -17,10 +17,13 @@ BuildRequires : emacs
 BuildRequires : lua-dev
 BuildRequires : ncurses-dev
 BuildRequires : pkgconfig(cairo)
+BuildRequires : pkgconfig(gdlib)
 BuildRequires : pkgconfig(gtk+-2.0)
 BuildRequires : pkgconfig(gtk+-3.0)
 BuildRequires : pkgconfig(ice)
+BuildRequires : pkgconfig(libturbojpeg)
 BuildRequires : pkgconfig(pango)
+BuildRequires : pkgconfig(xpm)
 BuildRequires : readline-dev
 
 %description
@@ -65,6 +68,7 @@ doc components for the gnuplot package.
 
 %build
 export LANG=C
+export SOURCE_DATE_EPOCH=1486391847
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -76,6 +80,7 @@ export no_proxy=localhost
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
+export SOURCE_DATE_EPOCH=1486391847
 rm -rf %{buildroot}
 %make_install
 
