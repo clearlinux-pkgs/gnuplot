@@ -1,3 +1,24 @@
+Changes in 5.0.5
+================
+* NEW allow filename completion for system commands and pipes (backport from 5.1)
+* NEW option to plot "with labels ... {rotate variable}"
+* NEW command "set minussign"
+* NEW stats command "name" option now accepts "columnheader" or "columnheader(N)"
+* NEW command option "set colorbox invert"
+* CHANGE qt terminal force selection of outline font rather than bitmap font
+* CHANGE post terminal simplex/duplex output depends on PostScript level setting
+* CHANGE improved autoscaling of plot "with boxes"
+* CHANGE qt terminal sets TERM_POLYGON_PIXELS to avoid aliasing artifacts
+* CHANGE all stats and fit commands skip header records if "autotitle columnhead"
+* FIX Do not confuse EOF with 8-bit character 0x177 (E.g. in Cyrillic encodings).
+* FIX use blank line rather than 'u' flag in "set table" output of smoothed data
+* FIX order dependence of "fillcolor" keyword in plot commands
+* FIX svg - better vertical justification of rotated text
+* FIX wxt - file export widget correctly handles inactive plots
+* FIX epslatex - reset linetype between plots (needed if plotted "notitle")
+* FIX qt - leading or trailing whitespace in enhanced text was being ignored
+* FIX regression in rendering 'plot ... matrix every ... with image'
+
 Changes in 5.0.4
 ================
 * CHANGE minimum linewidth of all cairo terminals is now 0.2 pt
@@ -22,6 +43,7 @@ Changes in 5.0.4
 * FIX bad plot iteration with negative increment, e.g. plot for [i=9:1:-1] foo(i)
 * FIX smoothed curves could not be plotted as filledcurves; now they can be
 * FIX win terminal apply color to enhanced text
+* FIX aquaterm slow rendering of images with keyword "pixels"
 
 Changes in 5.0.3
 ================
