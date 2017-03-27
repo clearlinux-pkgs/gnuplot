@@ -1,3 +1,31 @@
+Changes in 5.0.6
+================
+* NEW command 'set micro' enables encoding-specific char for gprintf %c format
+* NEW command 'set datafile missing NaN' treats invalid data as if it were missing
+* NEW backport updated svg/domterm terminal from development version
+* CHANGE - start/end limits in nested iterations are reevaluated dynamically
+* CHANGE - revised adjustment of x2label and plot title when x2tics are present
+* CHANGE - mark non-free pdf terminal DEPRECATED (to be removed in release 5.2)
+* CHANGE - allow fractional font sizes for gdlib terminals
+* CHANGE - do not allow inverted R axis (requires support not backported from 5.1)
+* CHANGE - allow pointinterval property in 'with lp' for splot as well as for plot
+* CHANGE - "linewidth <lw>" is accepted as a terminal option for aquaterm, qt, wxt
+* CHANGE - spline segments outside xrange are ignored rather than treated as errors
+* FIX assignment of x/y dimensions in "binary record=(a,b) ... with image"
+* FIX wxt - multithreaded wxt was faulting during resize (mutex lock failure)
+* FIX windows - timed pause only worked for intervals < 1 second
+* FIX Front/back layering of border+grid lines was not always correct in hidden3d
+* FIX "set pm3d depthorder interpolate N,M" memory allocation failure
+* FIX aquaterm failed to honor request to disable enhanced text markup
+* FIX save and show commands failed to list linecolor for lines with "lt -1"
+* FIX the "missing" data flag is honored by "using ($n)" as it is for "using n"
+* FIX error reporting of line number inside a bracketed clause
+* FIX gnuplot_x11: possible fix for sporadic use-after-free error
+* FIX initialization of hidden3d structures for splot with dots
+* FIX track arrowhead properties in hidden3d mode
+* FIX tracking of NaN values from function evaluated during binary data input
+* FIX 3D rotation does not clobber hidden/visible status of plots
+
 Changes in 5.0.5
 ================
 * NEW allow filename completion for system commands and pipes (backport from 5.1)
