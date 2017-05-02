@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.0.6
-Release  : 6
+Release  : 7
 URL      : http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.6/gnuplot-5.0.6.tar.gz
 Source0  : http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.6/gnuplot-5.0.6.tar.gz
 Summary  : No detailed summary available
