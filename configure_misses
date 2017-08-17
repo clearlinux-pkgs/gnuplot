@@ -1,0 +1,23 @@
+Configure miss: library containing cdawson
+Configure miss: latex
+Configure miss: latex2e
+Configure miss: latex2html
+Configure miss: dvips
+Configure miss: troff
+Configure miss: kpsexpand
+Configure miss: texhash
+Configure miss: MS-DOS/djgpp/libGRX
+Configure miss: NeXT
+Configure miss: Mac OS X
+Configure miss: BeOS
+Configure miss: Alpha/AXP CPU
+Configure miss: sys/bsdtypes.h usability
+Configure miss: sys/bsdtypes.h presence
+Configure miss: sys/bsdtypes.h
+Configure miss: libc.h usability
+Configure miss: libc.h presence
+Configure miss: libc.h
+Configure miss: doprnt
+Configure miss: if malloc(0) returns 0
+Configure miss: wx-config
+Configure miss: PANGO_1_10_2

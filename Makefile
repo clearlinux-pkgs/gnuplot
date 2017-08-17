@@ -1,5 +1,5 @@
 PKG_NAME := gnuplot
-URL := http://downloads.sourceforge.net/project/gnuplot/gnuplot/5.0.6/gnuplot-5.0.6.tar.gz
+URL := https://sourceforge.net/projects/gnuplot/files/gnuplot/5.0.7/gnuplot-5.0.7.tar.gz
 
 
 include ../common/Makefile.common

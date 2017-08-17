@@ -1,3 +1,31 @@
+Changes in 5.0.7
+================
+* NEW set term {pngcairo|pdfcairo} pointscale <factor>
+* NEW "save fit" back-ported from version 5.2 as a replacement for "update"
+* NEW user-defined dashtypes in metapost terminal
+* CHANGE deprecate "update" command (but do not remove it)
+* CHANGE allow placement of circles in 3D plots using axis coordinates
+* CHANGE ignore invalid z coordinate for 3D objects placed in "set view map"
+* CHANGE distinguish 'bind "shift-Button1"' from 'bind "Button1"'
+* CHANGE use Mingw-w64 and MSVC popen rather than built-in "fake" popen
+* CHANGE allow range to include sampling interval in plots using pseudofile '+'
+* FIX rangelimited y2 axis could produce spurious diagonal line across plot
+* FIX assignment of x/y dimensions in "binary record=(a,b) ... with image"
+* FIX negative array index caused by hidden3d degenerate polygon
+* FIX object clipping in "set view map"
+* FIX cairo terminals: scale textbox border linewidth by terminal linewidth
+* FIX canvas terminal: initialization of plot dimensions (affects first zoom)
+* FIX crash in stats if no usable data is found
+* FIX do not use LaTeX formatting in tabular output
+* FIX sanity check to catch "plot '+' binary"
+* FIX sanity check for NULL format passed to gprintf
+* FIX sanity check for empty image data structure on input
+* FIX more consistent handling of plot 'with table'
+* FIX incorrect, possibly empty, command string was saved for previous fit
+* FIX 2D images with logscale axes could fail (segfault)
+* FIX nested iteration containing an empty range
+* FIX allow 64-bit Cygwin build using gtk3 for wxt terminal
+
 Changes in 5.0.6
 ================
 * NEW command 'set micro' enables encoding-specific char for gprintf %c format
@@ -11,7 +39,6 @@ Changes in 5.0.6
 * CHANGE - allow pointinterval property in 'with lp' for splot as well as for plot
 * CHANGE - "linewidth <lw>" is accepted as a terminal option for aquaterm, qt, wxt
 * CHANGE - spline segments outside xrange are ignored rather than treated as errors
-* FIX assignment of x/y dimensions in "binary record=(a,b) ... with image"
 * FIX wxt - multithreaded wxt was faulting during resize (mutex lock failure)
 * FIX windows - timed pause only worked for intervals < 1 second
 * FIX Front/back layering of border+grid lines was not always correct in hidden3d

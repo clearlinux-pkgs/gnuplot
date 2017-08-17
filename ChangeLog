@@ -1,3 +1,321 @@
+2017-08-16  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/wxtterminal/wxt_gui.cpp:  Build testing under Cygwin failed
+	because of gtk2->gtk3 api change.  We fixed this in 5.2, so back-port
+	that fix for 5.0.7 also.  
+	1) Replace handle->window with gtk_widget_get_window(handle).
+	2) gdk_window_foreign_new() (used only by --enable-raise-console) no
+	longer exists. Make this code conditional on (GTK_MAJOR_VERSION == 2).
+
+2017-08-13  Ethan A Merritt  <merritt@u.washington.edu>
+
+	Tag 5_0_7
+
+2017-08-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	PATCHLEVEL etc:  Bump versioning to 5.0.7
+
+2017-08-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/command.c src/parse.c src/plot2d.c demo/iterate.dem:
+	Revise recursive iteration algorithm to address problems with empty
+	ranges in a nested iteration. Add support for dynamic reevaluation of
+	the string in nested ranges using "for [s in <string-expression>]".
+	Bug #1952
+
+2017-08-07  Martin Beranek
+
+	* term/metapost.trm:  Support for user-defined dashtypes.
+
+2017-08-04  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (parse_range) src/datafile.c (df_generate_pseudodata)
+	src/axis.h src/plot2d.c:  Somewhat delayed application of patch from 
+	2014-12-08, originally deferred so that the feature could be tested
+	in the development version.  Allow an optional sampling interval as
+	part of the sampling range spec for pseudofile '+' in a plot command:
+	    plot sample [a=0:360:10] '+' using (3+sin(a)):(cos(a)) with points
+
+2017-08-02  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c(plot_image_or_update_axes): Image code is shared by
+	2D and 3D paths.  If we are in 2D we cannot rely on pixel.z being a
+	reasonable z coordinate, so treat all z coordinats as 0.
+	5.0.6 would segfault on command
+	    set log xy; plot 'blutux.rgb' binary array=(128,128) flipy \
+		format='%uchar' with rgbimage
+
+2017-07-31  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* config/mingw/Makefile config/msvc/Makefile config/config.nt:
+	Mingw-w64 and MSVC have working popen/pclose implementations for GUI
+	applications.  So we use them instead of our own "fake" pipe emulation.
+
+	* config/watcom/Makefile config/config.oww:  Enable pipe support
+	using pipe emulation for wgnuplot.
+
+	Bug #1950
+
+2017-07-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/command.c src/fit.c src/fit.h src/tables.c src/tables.h
+	docs/gnuplot.doc:  Deprecate command "update" in favor of new command
+	"save fit <filename>".  "update" remains for backward compatability but
+	will be removed in 5.3.
+
+2017-07-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/fit.c:  The code saving the previous "fit" command incorrectly
+	assumed that "fit" must be the first thing on the input line.  This
+	is clearly not true, particularly when the command is inside a {}
+	bracketed clause since the entire clause acts as one long input line.
+	Bug #1946
+
+2017-07-18  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c src/plot3d.c docs/gnuplot.doc:
+	Fix inconsistent handling of "plot ... with table".
+	E.g. "set style data table; plot foo" tried to both plot and tabulate.
+	Warn that function plots are not handled.
+
+2017-07-03  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/wgdiplus.cpp:  Do not apply gamma correction to filled
+	polygons. Speeds up drawing and yields results consistent with
+	other terminals.
+
+2017-06-13  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/wgdiplus.cpp:  Cleartype text antialiasing seems to be only
+	applied to horizontal text.  Use grayscale antialiasing for rotated
+	text.
+
+2017-06-12  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/util.c (gprintf):  Sanity check for NULL format
+
+	* src/datafile.c (df_open):  Sanity check to catch "plot '+' binary ..."
+
+	* src/axis.c (clone_linked_axis):  Sanity check that inverse mapping
+	function does not yield NaN at axis range endpoints.
+
+	* src/graphics.c (process_image):  Sanity check for empty image data
+	structure.
+
+2017-06-02  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/util.c (gprintf):  Do not use LaTeX formatting in tabular output.
+	Bug #1931
+
+2017-05-30  (Debian /debian-science/packages/gnuplot.git/)
+
+	* term/post.trm:  Do not emit Author field containing current username.
+
+2017-05-25  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/wgraph.c (GraphEnd):  Let the gnuplot core know the current
+	window ID.
+
+2017-05-23  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/qtterminal/qt_term.cpp (qt_waitforinput):  The Windows code waits
+	for the named pipe internally used by the QLocalSocket object. But in
+	some cases the Qt object itself will not provide new data.  Handle
+	that case by Sleep()ing to release the CPU instead of idling rapidly.
+	Bug fix.
+
+2017-05-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/stats.c:  Clean exit from stats routine after finding no data in
+	input file.
+	Bug #1930
+
+2017-05-15  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/wgraph.c (WM_SIZE):  Track canvas (and window) size.
+
+	* src/win/winmain.c (ConsoleHandler) src/plot.c|h (terminate_flag)
+	src/readline.c (readline):  Add an event handler to catch "close" 
+	signals to console mode gnuplot on Windows.  These events are passed
+	on to the main thread to terminate cleanly.
+	Bugs #1916, #1917, #1918
+
+	* src/set.c (set_encoding, init_special_chars) src/setshow.h
+	src/plot.c:  Move initialisation of special characters to a separate
+	function, which is also called during program init.  Bug fix.
+
+2017-05-15  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/mouse.c:  Allow "bind 'shift-Button1' 'something'".
+	Previously the shift key was ignored.
+
+2017-05-15  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/term.c (do_arc):  Remove hack for the windows terminal which was
+	meant to fix the drawing of circles, but broke it.  Note that there are
+	similar cases in the code (ellipses) where a hack like this is actually
+	necessary.  Further investigations required.
+	Bug #1880
+
+	* src/win/wgraph.c (MakeFonts):  Handle empty type face name (GDI).
+	Bug #1860
+
+2017-05-13  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	Backport changes from 5.1:
+
+	* src/win/wgdiplus.cpp:
+	Graphics::MeasureString did not take trailing spaces into account.
+	Off-by-one error in mapping of graph coordinates.
+	Fix memory leak in SetFont_gdiplus.
+
+	* src/win/wgraph.c:
+	(drawgraph) Off-by-one error in mapping of graph coordinates.
+	(CopyClip) Only attempt to set clipboard data if the bitmap/metafile
+	handle is valid.  Emit an error message otherwise.
+	(SaveAsEMF) Tweak flags for GetSaveFileName() to make sure that the
+	file/path is not read-only and to preserve the current working
+	directory.
+	(WndGraphProc): Remove dead code in mouse handling: Single and double
+	clicks are handled by the code in mouse.c and the window is not even
+	configured to receive double click events.  Also make sure that mouse
+	wheel "button"s are released again.
+
+	* src/win/wcommon.h src/win/wgnuplib.h src/win/wgraph.c
+	src/win/wgdiplus.cpp:  GDI+ implementation of enhanced text.
+	Until now the GDI+ backend still used the GDI code to draw enhanced
+	text, which caused differences in layout if text was rendered as
+	"normal" or enhanced text.  We now re-use the previous GDI-only
+	routines and introduce function pointers to call GDI or GDI+ code
+	depending on if they are called from drawgraph() or
+	drawgraph_gdiplus().
+
+	* src/win/wgraph.c src/win/wcommon.h (draw_image):  Make static.
+
+2017-05-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/cairo.trm:
+	In order to scale up an existing plot uniformly, e.g. for printing
+	a poster-size PostScript or PDF file, it is convenient to be able to
+	give the scale factor in the "set term" command.  We already offer
+	"set term ... {linewidth <factor>} {fontscale <factor>}".  This patch
+	adds "set term ... {pointscale <factor>}" to scale up pointsize for
+	cairo terminals.
+
+2017-05-02  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/canvas.trm:  Fix incorrect initialization of axis width/height.
+	Bug #1925
+
+	* term/js/gnuplot_mouse.js:  Work-around for plots that were generated
+	prior to the above fix.  You can use this mousing code even if the plots
+	being moused contain the initialization error.
+	Bug #1925
+
+2017-04-19  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/wxterminal/gp_cairo.cpp (gp_cairo_boxed_text): Scale linewidth of
+	textbox border by the current terminal linewidth setting.
+	Bug #1825
+
+2017-04-19  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* configure.in docs/Makefile.am:  Some systems allow for parallel
+	installation of different lua versions (e.g. Ubuntu).  We already use
+	pkg-config to test for "lua" and "lua5.1" packages.  This patch extends
+	that mechanism to lua5.2 and lua5.3.  Change the name of the lua
+	executable used to build the docs of the gnuplot lua terminal
+	accordingly.
+	Patch #750
+
+2017-04-18  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c (place_objects):  Error messages from placement of
+	circles and ellipses were misleadingly referring to "rect N" instead
+	of "object N".
+
+	* src/graph3d.c (map3d_position_r):  Placement of generic objects in
+	"set view map" mode should not fail just because the z coordinate is
+	non-positive and z is log-scaled.  The projection only uses x and y.
+
+	* src/parse.h src/parse.c src/misc.c (parse_fillstyle):  New utility
+	routine is_function(token) for convenience in parsing.
+
+	* src/graph3d.c (draw_3d_graphbox): Clipping area was not maintained
+	across this routine, causing object clipping in "set view map" to fail.
+
+2017-04-12  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/hidden3d.c (build_networks):  A degenerate polygon can fall all 
+	the way through the classification loop, leaving the flag value -2 as
+	the polygon number which is then used as an array index.  Oops.
+
+2017-04-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/eval.c (update_gpval_variables):  New exported variables giving
+	screen coordinates of the 3D plot axial center and radius of the
+	enclosing sphere. GPVAL_VIEW_XCENT GPVAL_VIEW_YCENT GPVAL_VIEW_RADIUS.
+
+	* src/graphics.c (place_objects):  Allow placement and size of circles
+	in 3D plot to use axis coordinates (used to only allow screen coords).
+	As in 2D, the radius of the circle is always scaled to match the x axis
+	and the circle itself is always drawn in the plane of the figure.
+
+	* demo/Makefile.am.in:  Place quotes around $(GNUTERM) so that
+	multi-word definitions do not gum up "make check".
+
+2017-04-01  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/mouse.c term/qt.trm src/qtterminal/qt_term.cpp
+	src/qtterminal/QtGnuplotWindow.cpp: The qt terminal assumed that
+	"space-raises-console" would be implemented in the core code.
+	But it never was.  Instead on non-MSWin platforms hitting <space>
+	in the qt window generates a mouse protocol error.
+	Document that "space-raises-console" is only for MSWin, and have
+	other platforms treat it like any other key.
+
+2017-04-01  Daniel J Sebald <daniel.sebald@ieee.org>
+
+	* src/plot.c (main):  Exit with error if dropping privilege fails.
+
+2017-03-31  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graph3d.c (do_3dplot):  "set xyplane at 0; set log z; splot..." =>
+	no plot drawn.  Change this so that "at 0" for logscale z is treated as
+	"xyplane at <Z-axis min>".
+	Bugfix.
+
+2017-03-23  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/qtterminal/QtGnuplotEvent.h src/qtterminal/QtGnuplotWindow.cpp:
+	Event type GEPID was added between the 5.0.5 and 5.0.6 releases.
+	It is used only by Windows, and only to allow space-raises-console.
+	Adding it in the middle of the enum definition made gnuplot_qt built for
+	5.0.6 incompatible with previous builds, so I moved GEPID to the highest
+	defined enum value.  Unfortunately this broke the code in
+	QtGnuplotEventHandler that treats any event type > GEDone as an error.
+	So now we put it back in the middle of the enum definition but only
+	define it for WIN32.
+
+	Add a warning that GEDone must be the highest event type value defined.
+
+2017-03-21  Craig DeForest  <zowie@users.sf.net>
+
+	* src/datafile.c (plot_option_binary):  Interpretation of dimensions
+	given via "binary record=(a,b)" contradicted that for dimensions given
+	via "binary array=(a,b)".  This caused mangling of image data read in
+	using the "record" keyword.
+	NB: This was applied 2016-11-03 but somehow got lost in 5.0.6 - reapply!
+	Bug #1873
+
+2017-03-19  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/gadgets.h src/graphics.c (plot_border):  Range-limited y2 axis was
+	drawn in the wrong direction (top-to-bottom rather than bottom-to-top).
+	If the top plot border was drawn also, this resulted in a spurious
+	diagonal line across the plot.
+	Bug #1921
+
 2017-03-17  Release 5.0.6
 
 	PATCHLEVEL etc:  Bump versioning to 5.0.6 for release
@@ -390,7 +708,7 @@
 	given via "binary record=(a,b)" contridicted that for dimensions given
 	via "binary array=(a,b)".  This caused mangling of image data read in
 	using the "record" keyword.  Change the interpretation to match that 
-	of "array".
+	of "array".  NB: This fix somehow got lost in 5.0.6 - reapply!
 	Bug #1873
 
 2016-10-27  Ethan A Merritt  <merritt@u.washington.edu>
