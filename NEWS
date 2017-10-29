@@ -1,5 +1,22 @@
-Changes since 5.2.rc4
-====================
+Changes in 5.2.1
+================
+* NEW set table separator {tab|comma|"char"} allows creation of csv files
+* NEW hotkey for changing azimuth in 3D plots with mousing
+* NEW splot ... with lines title at {beg|end}
+* NEW Rework gstrptime() to handle relative time formats tH tM tS
+* NEW command "set rgbmax <value>" controls interpretation of input RGB values
+* FIX allow mixed use of in-key plot titles and manually placed titles
+* FIX prevent runaway iterations of the form   plot for [i=start:*] ...
+* FIX handle in-line range limits for linked or nonlinear axes
+* FIX restore pre-5.2 interpretation of logscaled tic increment as a multiplier
+* FIX logscale tic placement is closer to that of versions before 5.2.0
+* FIX recheck inrange/outrange points after spline or bezier smoothing
+* FIX autoscaling of plots with linked axes where data is plotted on x2 or y2
+* FIX sampling on x2 if linked to x1;  e.g. plot sample [t=1:5:1] '+' axes x2y1
+* FIX empty range on logscale y axis is handled by auto-extending the range
+
+Changes in 5.2.0
+================
 * NEW user-defined dashtypes in metapost terminal
 * NEW datablock contents may be accessed as an indexed array of strings
 * CHANGE allow explicit sample interval for u and v using pseudofile '++'

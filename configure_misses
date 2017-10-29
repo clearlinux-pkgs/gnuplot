@@ -16,6 +16,8 @@ Configure miss: sys/bsdtypes.h
 Configure miss: libc.h usability
 Configure miss: libc.h presence
 Configure miss: libc.h
+Configure miss: struct exception in math.h
 Configure miss: doprnt
 Configure miss: if malloc(0) returns 0
+Configure miss: gdImageCreateTrueColor in -lgd
 Configure miss: wx-config

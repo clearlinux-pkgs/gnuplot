@@ -1,3 +1,223 @@
+Release 5.2.1
+
+	A few bug-fixes present in the distributed package for 5.2.1 are not yet
+	commited upstream because the repository is in the process of migration
+	from cvs to git.
+
+	* src/graphics.c (plot_betweencurves):
+		plot 'foo' with filledcurves below y=bar
+	would fail to identify "below" regions where the y value foo[x] at the
+	start or end of the region was exactly equal to bar.
+	Bug #1983
+
+	* src/axis.c (gen_tics):  `set log x; set xtics foo` would always place
+	the first axis tic at foo rather than at (foo / base^N) for suitable N.
+
+	* src/win/winmain.c (ConsolePutS, ConsolePutCh):  Use standard file IO
+	instead of Console API to enable word-wrapping on Windows 10 and to
+	allow for redirection of stdout/stderr.
+	Bug #1985
+
+	* term/post.trm:  Raise the limit on number of relative moves before
+	a "stroke" so that a full circle as drawn by do_arc() does not glitch
+	due to insertion of a "stroke xx yy M" sequence that resets the
+	dot/dash pattern.
+	Bug #1987
+
+	* src/plot2d.c (eval_plots): If the range for logscaled y axis is empty,
+	e.g. the plot holds a single point, auto-extend the range rather than
+	giving up with an error.
+	Bug #1978
+
+2017-10-13  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/pm3d.c (pm3d_draw_one pm3d_plot): Move call of term->layer() with
+	TERM_LAYER_BEGIN_PM3D_MAP and TERM_LAYER_END_PM3D_MAP from pm3d_draw_one
+	to pm3d_plot in order to avoid insertion of line commands between the
+	%pm3d_map_begin and pm3d surface commands in the postscript file
+	which broke the pm3dCompress.awk and pm3dConvertToImage.awk scripts.
+
+2017-10-11  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (gen_tics): The start point for log-scale could not lie
+	outside the axis range (e.g. start at 1 for axis range [5:50]).
+	Remove this restriction.  Still not perfect backwards compatibility
+	with log-scale tic placement in earlier versions.
+
+2017-10-09  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/datafile.c (df_generate_pseudodata):  The sample-generation code
+	failed to distinguish between nonlinear x2 (primary axis hidden) and
+	"set link x2 via f(x) inv g(x)" (primary axis x1).
+	Bug #1973
+
+	* src/graphics.c src/graphics.h src/set.c src/tables.c src/tables.h
+	src/unset.c src/show.c src/save.c demo/image2.dem docs/gnuplot.doc:
+
+	The default interpretation of RGB color components on input is that
+	they are integer values in the range [0:255].  This matches the 
+	content of PNG and JPEG files. Since the interpretation of RGB color
+	components has been decoupled from the palette range limits controlled
+	by "set cbrange", data using some other RGB convention must be rescaled.
+	This patch introduces a new command `set rgbmax`.  The primary use is
+	so that data using the convention that color components are floating
+	point values in the range [0:1] can be plotted using
+	    set rgbmax 1.0;   plot 'imagedata' with rgbimage
+
+2017-10-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (reconcile_linked_axes) src/axis.h src/plot2d.c:
+
+	gnuplot version 5.0 always tracked the autoscale range on the primary
+	axis (x1 or y1) of a linked pair, even if the data was actually plotted
+	on x2 or y2.  In verison 5.2 we track the data range on x1 x2 y1 y2
+	separately.  This caused breakage wherever the program assumed the
+	autoscale range on x1 (or y1) was always current.  Worse, it would
+	propagate that range onto the secondary axis, possibly overwriting the
+	correct range.  Now we introduce a new routine reconcile_linked_axes()
+	that merges the min/max values from e.g. x1 and x2 so that the 
+	autoscaled range covers input data plotted on either axis.
+	Bug #1973
+
+2017-10-03  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/gd.trm:  Report number of frames in completed animation sequence.
+
+2017-10-01  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/wgraph.c:  Make sure that the bounding rectangle of emf data
+	starts at 0,0.  Bugfix.
+
+2017-09-29  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.h src/axis.c (axis_set_scale_and_range):  Incorrect use
+	of unsigned parameters caused terminal scaling to fail if the axis 
+	range was inverted. The error was introduced by converting from a
+	macro to a subroutine in the run-up to 5.2.
+
+2017-09-25  Dima Kogan  <dima@secretsauce.net>
+
+	* src/axis.c (clone_linked_axes):  When sanity checking the via/inverse
+	mapping functions for linked or nonlinear axes, adjust the allowable
+	difference by a scale factor related to the axis range.
+
+2017-09-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c:  smoothing options csplines|acsplines|bezier|sbezier
+	failed to recheck inrange/outrange after smoothing.  Example failure:
+	    plot [0:4][4:0] '+' using 1:1 smooth bezier w lines
+	Bugfix
+
+	* src/interpol.c (mcs_interp):  The previous implementation of monotonic
+	cubic splines did not guarantee that the original points were included
+	in the set of generated points used to draw the resulting curve.  This
+	meant that the curve might not pass through all points.  Now we merge
+	the original points with the set of evenly sampled points.
+	Thanks to K Antal for identifying and demonstrating the problem.
+	Patch/Bug #1972
+
+	* src/axis.c src/axis.h src/datafile.c src/gp_time.h src/gp_types.h
+	src/internal.c src/time.c demo/timedat.dem docs/gnuplot.doc:
+	Gnuplot already supports relative time format specifiers %tH %tM %tS
+	for output via strftime() and in the time format for axis tic labels.
+	Now we add the same format specifiers as an option for input via
+	strptime().  They can also be used to read data fields containing 
+	degrees/minutes/seconds.
+	relative time formats for input (this patch)
+	    print strptime("%tM:%tS", "-61:12.50")
+	    -3672.5
+	"normal" time formats don't work for this purpose (prints "0").
+
+2017-09-23  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (gen_tics) docs/gnuplot.doc demo/nonlinear6.dem:
+	Revise documentation of "set xtics" to include examples and description
+	of logscale keyword.  Restore pre-5.2 behaviour that for log-scaled axes
+	the increment in "set xtics {start,} incr {,end}" is interpreted as a
+	multiplicative factor rather than a constant interval.  However this is
+	only true if the "logscale" attribute is set for axis tics.
+	New demo nonlinear6.dem exercises this feature and also shows the use of
+	"set tics rangelimit" with log-scaled axes.
+	Bug #1971
+
+2017-09-19  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/parse.c (parse_array_assignment):  Memory leak.
+
+	* src/Makefile.am:  Fix recipe for building qt embed_example
+
+2017-09-17  KH Moriyama  <khmoriym@users.sf.net>
+
+	* src/axis.c (parse_range):  Backport from 5.3 - modify parse_range()
+	to handle in-line ranges for linked or nonlinear axes.
+	Bug #1964
+
+2017-09-17  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/set.c (parse_label_options):  Memory leak.
+
+2017-09-15  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c src/plot3d.c:  Starting in version 5, NaN and UNDEFINED
+	input data points count toward the total number of points read.  This
+	caused the test for "no points read" to not terminate iterations of the
+	form  "for [i=min:*] ..." on the first missing file or invalid spec.
+	To prevent runaway iteration we now test for "no INRANGE points read in".
+
+	* src/graph3d.c src/datafile.c:  Add initializers for variables to
+	silence compiler warnings.
+
+	* src/datafile.c (f_columnhead):  columnhead(N) invoked inside a using
+	specifier now returns the actual column header.
+	See Bug #1968
+
+2017-09-13  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c src/graph3d.c: The "title at {beg|end|<position>}"
+	options were originally intended as an alternative to the normal key,
+	so preservation of the key layout was not a concern. This patch allows
+	you to mix custom-placed titles with in-key titles in the same plot.
+	Bug #1967
+
+2017-09-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c( gen_tics ) src/axis.h( reorder_if_necessary ):
+	New macro to reorder the min/max of axis ranges (but could be used
+	elsewhere).  If the mapping function of linked axes inverts the
+	axis direction, tics were not being generated because min > max.
+	E.g. set link x2 via 100-x inv 100-x; set x2tics; plot [50:40] x
+
+	* src/graphics.c (plot_border) src/boundary.c (boundary):
+	Range-limited axes were not accounting for nonlinear or linked axes.
+	Space reserved for long axis tic labels made the same mistake.
+	Bug #1965
+
+2017-09-06  Ethan A Merritt  <merritt@u.washington.edu>
+
+	Several additions already in 5.3 but held back from 5.2 during -rc testing
+
+	* src/set.c (set_separator) src/show.c (show_table):  New command option
+	    set table {separator {comma|tab|whitespace|"<char>"}}
+	allows "plot with table" to create csv files.
+
+	* src/tabulate.c:  Handle splot with rgbimage, rgbalpha
+
+	* src/graphics.h src/graphics.c src/graph3d.c:  The 2D routine
+	attach_title_to_plot() can be shared by the 3D code in order to support
+	"splot ... with lines title at {beg|end}".
+
+	* src/qtterminal/QtGnuplotScene.cpp":
+	 QtAlign::foo properties are bit definitions, not integers
+
+2017-09-06  Martin Saturka  <kvutza@users.sf.net>
+
+	* src/mousecmn.h src/mouse.c:  Bind the < and > keys to change the
+	current azimuth setting while mousing 3D plots.
+	(EAM) add an internal flag "Opt-" so that you can bind a hotkey for
+	which the Alt and Ctrl modifiers are optional rather than required.
+
+Release 5.2.0
+
 2017-09-03  Ethan A Merritt  <merritt@u.washington.edu>
 
 	* PATCHLEVEL src/version.c:  Update versioning for 5.2 release
