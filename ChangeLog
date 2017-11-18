@@ -1,22 +1,63 @@
-Release 5.2.1
+Release 5.2.2
 
-	A few bug-fixes present in the distributed package for 5.2.1 are not yet
-	commited upstream because the repository is in the process of migration
-	from cvs to git.
+2017-11-15  Ethan A Merritt  <merritt@u.washington.edu>
 
-	* src/graphics.c (plot_betweencurves):
-		plot 'foo' with filledcurves below y=bar
-	would fail to identify "below" regions where the y value foo[x] at the
-	start or end of the region was exactly equal to bar.
-	Bug #1983
+	* src/set.c (set_logscale):  If the axis is currently autoscaled and
+	the range limits still hold non-positive values from a previous state,
+	reset them to [0.1 : 10.].
 
-	* src/axis.c (gen_tics):  `set log x; set xtics foo` would always place
-	the first axis tic at foo rather than at (foo / base^N) for suitable N.
+2017-11-04  Ethan A Merritt  <merritt@u.washington.edu>
 
-	* src/win/winmain.c (ConsolePutS, ConsolePutCh):  Use standard file IO
-	instead of Console API to enable word-wrapping on Windows 10 and to
-	allow for redirection of stdout/stderr.
-	Bug #1985
+	* configure.ac src/syscfg.h src/command.c:
+	(back-ported HBB patch from 5.3 with addition of OS2) 
+	Include <sys/wait.h>, if it exists.  Provide fall-back definition
+	for WEXITSTATUS if none is found via <sys/wait.h>.
+	Move MS Windows specific replacement from command.c to syscfg.h.
+	Bug #1989
+
+2017-11-01  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c (histogram_range_fiddling):  For stacked histograms,
+	autoscaling did not distinguish between 'set xrange [*:*]' and 
+	'set xrange [explicit_min:*]', always resetting min to -1.
+	Bugfix
+
+	* RELEASE_NOTES NEWS PATCHLEVEL configure.ac src/version.c
+	Bump version to 5.2.2 (but not yet tagged)
+
+2017-10-31  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/command.c: Fix #define breakage
+
+2017-10-31  Dima Kogan  <dima@secretsauce.net>
+
+	* configure.in:  Add $LIBRARIES_FOR_X to WX_LIBS so that configuration
+	 of Makefiles includes -lX11 as required by wxgtk3
+
+2017-10-31  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/command.c (is_history_command): Remove use of isblank() to support
+	older compilers.
+
+2017-10-31  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* term/context.trm: In OS/2, LINEJOIN constants are defined in os2emx.h.
+
+	* config/config.os2: Define int32_t as int.
+
+	* src/command.c: Define WEXITSTATUS empty for both Windows and OS/2.
+
+2017-10-30  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* RELEASE_NOTES NEWS src/version.c demo/image2.dem:
+	Bring CVS files up date with the contents of the 5.2.1 tarball.
+
+2017-10-30  Achim Gratz  <Stromeko@nexgo.de>
+	
+	* configure.ac:  The configury supposedly tries to find TEXDIR via
+	kpsexpand, but that code never got run if $prefix is set.  Now it is.
+
+2017-10-30  Ethan A Merritt  <merritt@u.washington.edu>
 
 	* term/post.trm:  Raise the limit on number of relative moves before
 	a "stroke" so that a full circle as drawn by do_arc() does not glitch
@@ -24,10 +65,33 @@ Release 5.2.1
 	dot/dash pattern.
 	Bug #1987
 
-	* src/plot2d.c (eval_plots): If the range for logscaled y axis is empty,
-	e.g. the plot holds a single point, auto-extend the range rather than
-	giving up with an error.
+	* src/axis.c (gen_tics):  `set log x; set xtics foo` would always place
+	the first axis tic at foo rather than at (foo / base^N) for suitable N.
+
+	* src/graphics.c (plot_betweencurves):
+		plot 'foo' with filledcurves below y=bar
+	would fail to identify "below" regions where the y value of the start
+	or end data point was exactly (foo[x] == bar).
+	Bug #1983
+
+2017-10-30  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/win/winmain.c (ConsolePutS, ConsolePutCh):  Use standard file IO
+	instead of Console API to enable word-wrapping on Windows 10 and to
+	allow for redirection of stdout/stderr.
+	Bug #1985
+
+2017-10-30  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* docs/gnuplot.doc src/gadgets.c:  Trivial typos and out-of-date
+	comments.  Fix index entries for help section on piped data.
+
+	* plot2d.c (eval_plots):  Fix a regression causing an empty range on
+	log-scale y axis to error out rather than auto-extending the axis range.
+	Extension can be handled by the same routine used for linear axes.
 	Bug #1978
+
+Release 5.2.1
 
 2017-10-13  Petr Mikulik  <mikulik@physics.muni.cz>
 
@@ -39,10 +103,10 @@ Release 5.2.1
 
 2017-10-11  Ethan A Merritt  <merritt@u.washington.edu>
 
-	* src/axis.c (gen_tics): The start point for log-scale could not lie
-	outside the axis range (e.g. start at 1 for axis range [5:50]).
-	Remove this restriction.  Still not perfect backwards compatibility
-	with log-scale tic placement in earlier versions.
+	* src/axis.c (gen_tics): The start point for log-scale tic placement
+	could not lie outside the axis range (e.g. start at 1 for axis range
+	[5:50]).  Remove this restriction.  Still not perfect backwards
+	compatibility with log-scale tic placement in earlier versions.
 
 2017-10-09  Ethan A Merritt  <merritt@u.washington.edu>
 
