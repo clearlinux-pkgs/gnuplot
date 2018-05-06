@@ -1,6 +1,363 @@
+2018-04-20  Ethan A Merritt  <merritt@u.washington.edu>
+
+	Bump version to 5.2.3
+
+2018-04-20  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c: Do not "snap" a sampled point of a function domain to 0
+	for non-linear x axis.  The original motivation for this was to assure
+	that coarse samples spanning x=0 would evaluate the sampled function at
+	exactly f(0).  However this makes no sense for nonlinear axes,
+	expecially log axes, because the sampling is actually being done on the
+	hidden axis not the visible axis where x=0.
+	Bug #2040
+
+2018-04-12  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/specfun.c (airy) term/lua.trm (LUA_GP_get_boundingbox):
+	Function declaration corrected to follow C prototype standard.
+
+2018-04-11  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/term_api.h src/term.c (do_arc):  Use signed rather than unsigned
+	terminal coordinates in do_arc().  This allows clipping of circles or
+	arcs whose center is off-screen on the left or botton (negative x or y
+	coordinate).  Previously the wrap-around of unsigned [cx,cy] caused
+	these to be treated as very far off-screen in the positive direction
+	and clipping failed to notice that portions of the arc could be visible.
+	Bug #2035
+
+2018-04-02  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/estimate.trm:  Incorrect cast in ENHest_writec caused all 3+
+	byte UTF-8 sequences in enhanced text to be estimated as double-width.
+
+2018-03-26  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c demo/poldat.dem:  yerrorbars in polar mode were being
+	drawn as purely vertical rather than radial.  Add a yerrorbars test
+	case to poldat.dem.
+	Bug #2031
+
+2018-03-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c (plot_lines edge_intersect):  Handle clipping of line
+	segment between INRANGE->UNDEFINED points.  Previously we checked for
+	UNDEFINED->INRANGE but failed to consider INRANGE->UNDEFINED.
+	In either case it should return zero, indicating that no clipped line
+	is possible.
+	Bug #2030
+
+2018-03-23  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/color.c (draw_color_smooth_box):
+	Default colorbox position in "set view map" mode should match 2D mode.
+	The previous algorithm failed to allow for logscale or other nonlinear
+	x axis settings, perturbing the width of the colorbox.
+	Bug #2029
+
+	* src/plot3d.c: emulate logscale axis range extension of pre-v5 splot
+	The routine extend_primary_ticrange() emulates the old behaviour
+	(i.e. prior to nonlinear axis code) of autoscaled logscaled axes.
+	It extends the range of the plot to include the next tic at either end.
+	We were already calling it for 2D plots; now we call it for 3D plots
+	as well.
+	Bug #2029
+
+	* src/command.c (splot_map_activate/deactivate):
+	'set view map' and 'set pm3d map' both flip the direction of the y
+	axis so that the layout matches a 2D plot.  In the case of a nonlinear
+	y axis, in particular 'set log y', this means we have to flip the
+	linked primary axis as well.
+	Bug #2029
+
+2018-03-05  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (extend_primary_ticrange):
+	This routine exists only to emulate the old behaviour (i.e. prior to
+	nonlinear axis code) of autoscaled logscale axes.
+	If it extends the range on the primary axis, this change must also be
+	propagated to the secondary (user-visible) axis.  Otherwise the reported
+	axis min/max are not correct.
+	Bugfix for log-scale mousing in canvas terminal.
+
+2018-03-03  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (eval_link_function):
+	Executing the general case nonlinear axis mapping functions via a
+	dynamically interpreted action table is slower than in-line evaluation.
+	In the special case of log-scaled axes we can short-circuit the 
+	general case evaluation by an immediate call to the log or exp function.
+	microbenchmark speedup 25%
+
+2018-02-23  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graph3d.c src/plot3d.c:  You might want contour lines to opt out
+	of hidden3d processing, e.g. because it messes up dashed lines.  Since
+	the low-level routines that draw the contour line segments look only at
+	the global "hidden3d" flag, we must save/clear/restore this flag if the
+	individual plot is marked "nohidden".
+
+2018-02-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/datafile.c (df_set_key_title_columnhead):  Handle the case
+	    stats FOO using 'namedcolumn' name columnhead
+	Bug #2023
+
+2018-02-21  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/qtterminal/QtGnuplotScene.cpp: include "notitle" plots in
+	accounting for toggle commands.  Plots can be toggled by number even if
+	they do not appear in the key.  Inclusion of "notitle" plots must not
+	change mapping of key box area to plot number.
+	Bug #2021
+
+	* term/svg.trm:  Apply current color to dots.
+	Bug #2022
+
+2018-02-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/multiplot.c:  Allow multiplot title to use full range of 
+	label properties (textcolor, boxed, offset, ...)
+
+2018-02-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/svg.trm:
+	The combination "set term svg mousing background 'black'" set the
+	background to white instead.
+
+2018-02-08  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	src/command.c src/datablock.c|h:  This patch splits lines containing
+	newline characters into multiple lines when the target of a print
+	command is a datablock.  That way we can e.g. get a datablock with
+	names of files on Windows:
+		set print $d; print system("dir /a-d /b *"); unset print;
+		print |$d|
+	Patch #754
+
+2018-02-08  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* src/command.c src/datablock.c|h:  This patch splits lines containing
+	newline characters into multiple lines when the target of a print
+	command is a datablock.  That way we can e.g. get a datablock with
+	names of files on Windows:
+		set print $d; print system("dir /a-d /b *"); unset print;
+		print |$d|
+	Patch #754
+
+2018-01-30  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/canvas.trm:  Always apply term->set_color(), including optional
+	alpha channel, to both strokeStyle and fillStyle.  This allows the
+	canvas terminal to honor RGBA colors for points and lines as well as
+	for area fill. Other terminals got this fix way back in version 4.6.
+	This change does not affect the javascript support routines so there
+	should be no backward-compatability issues.
+	Bug #2013
+
+2018-01-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/contour.c src/contour.h src/graph3d.c src/save.c src/set.c
+	src/show.c src/unset.c docs/gnuplot.doc demo/custom_contours.dem:
+
+	New options for customizing contour lines
+		set cntrparam {firstlinetype N} {{un}sorted}
+	The 'firstlinetype' option allows you to set linetype properties for
+	a block of linetypes, including dot-dash patterns,  and then specify
+	that these customized linetypes be used to generate contour lines.
+	In this case you probably want to also use the other new keyword
+	'sorted' because by default contour lines are not generated in
+	consistent ascending order.
+	Bugs #1603 #1612
+
+2018-01-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.* src/graph3d.c src/save.c src/set.c src/show.c src/unset.c:
+	New command "set grid {no}vertical" includes vertical grid lines in the
+	xz and yz planes corresponding to the major and minor x/y tic locations
+	already drawn in the xy plane.  Lines extend from zmin to the top of
+	the plot box, i.e. not all the way to the base plane.
+	Affects only 3D plots.
+
+2018-01-21  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/internal.c (f_gprintf):  The count of characters immediately
+	following "%%" in a format statement was not checked against the current
+	buffer length. Remove unsafe alternative code that doesn't use snprintf.
+	Bug #2011
+
+2018-01-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/time.c (xstrftime) internal.c (f_strftime):  Protect against
+	buffer overflow from user-supplied time format string.  E.g.
+	    print time(0,"%100tH%D")
+	Bug #2009
+
+2018-01-05  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/history.c:  If ./configure --disable-history-file or
+	--without-readline then do not try to build the routine that reads a
+	history file.  Whether --without-readline should really disable
+	history is another question, but that is a configuration issue not a
+	compile issue.
+	Bug #2008
+
+2018-01-04  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/gplt_x11.c:  When directing x11 output into an existing window,
+	use the same visualid that window already reports.  This fixes a failure
+	to connect gnuplot output to a socket window created by gtk3.
+	Failure and fix both reported by Dima Litvinov.
+	Bug #1980
+
+2017-12-28  Rin Okuyama <rokuyama@rk.phys.keio.ac.jp>
+
+	* configure.ac src/readline.* src/term.c src/qtterminal/qt_term.cpp
+	src/wxterminal/wxt_gui.* term/x11.trm:
+	Gnuplot does not suspend immediately by Control-z when it is configured
+	--with-readline=gnu; suspension is triggered by a subsequent input
+	character.
+
+	When SIGTSTP is received, the signal handler of readline sets a flag
+	and just returns. Routines of readline check this flag to invoke the
+	real handler to suspend. Since we replace rl_getc_function by our own
+	routine to catch input from mouse, we should also check this flag to
+	invoke the real handler. Othewise, we cannot suspend until next time
+	routines of readline are used.
+
+	Unfortunately, there is no portable ways to invoke the real handler of
+	readline at the moment. We need to use its internal routine. libreadline
+	will implement a public function for this purpose in a future release.
+
+	EAM: Original patch included the wrapper code directly in x11.trm;
+	I moved it into a separate routine wrap_readline_signal_handler()
+	so that it can be shared by other gnuplot terminals.
+	Bug #2002
+
+2017-12-27  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/util.c (print_line_with_error):
+	print_line_with_error() must not alter global gp_input_line or inline_num.
+	If called from int_error() or os_error() this would not matter because the
+	correct values will be reset anyway, but if called from int_warn() this
+	can truncate the current input line and/or print the wrong line number in
+	the warning message.  In particular it can cause premature exit from a
+	bracketed clause.
+	Bug #2007
+
+2017-12-25  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* term/caca.trm:  The raw and null libcaca drivers don't do anything
+	useful for us.  So don't include them in the list of available drivers
+	shown to the user.
+
+	* term/caca.trm:  Various range and null pointer checks to avoid
+	segfaults when using the raw and null drivers.  Still these won't
+	produce any useful output.
+
+	* term/caca.trm (CACA_init_display):  On Windows, disable the
+	console's quick edit mode to directly enable mouse interaction.
+
+	* term/caca.trm (CACA_process_events):  Failed to change internal
+	canvas size on window resize.  Bugfix.
+
+	* term/caca.trm (CACA_waitforinput):  Correct the check if the caca
+	driver window was closed.  This bug would cause gnuplot to exit on
+	the first keypress after closing the window.
+	Bugfix.
+
+	* term/caca.trm:  Simple bold / italic font support. libcaca supports
+	theses attributes currently only for ncurses, html, html3, bbfr, and
+	troff.
+
+	* term/caca.trm:  Add an emacs type modeline.
+
+	* term/caca.trm (CACA_text):  Test for input redirection.  Resolves
+	hang with slang/ncurses drivers in
+	    gnuplot -e "load 'simple.dem'" < /bin/true
+
+2017-12-25  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* .gitattributes:  ChangeLogs are prone to merge errors.  The GNU tool
+	 git-merge-changelog has been developed to avoid that and is likely
+	 available in most distributions.  Caveat is that git committers now
+	 need it to be installed and configured, see e.g.,
+	 https://gnu.wildebeest.org/blog/mjw/2012/03/16/automagically-merging-changelog-files-with-mercurial-or-git/
+
+2017-12-24  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/misc.c src/set.c src/util.c src/util.h:
+	new utility routine might_be_numeric() to be called before trying
+	to parse optional numeric value in command
+	Bug #2006
+
+2017-12-23  Bastian Maerkisch  <bmaerkisch@web.de>
+
+	* .gitattributes src/os2/4allterm.cmd:  Enforce EOL style or treatment
+	as binary for certain file types.
+
+2017-12-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/gadgets.c:  Only terminate polygon with "closepath" if it is
+	not clipped.  Bug #1995 revisited.
+
+	* term/cairo.trm:  Initial font used in enhanced text processing
+	should be the most recently set font, not the original font from
+	"set term".
+	Bug #1997
+
+2017-12-21  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/PostScript/prologue.ps term/PostScript/prologues.h:
+	Fix mismatched newpath/closepath and missing stroke in macro for
+	pm3d surface quadrangles.  This could generate a spurious rectangle
+	on the next stroke command.
+	Bug #2005
+
+2017-12-04  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/gadgets.c term/svg.trm:  Create a new path for each polygon.
+	In particular this provides a chance for a change in line properties
+	to take effect.
+	Bug #1995
+
+	* term/latex.trm: Sanity check latex terminal options.
+	Bug #1996
+
+2017-11-17  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/getcolor.c src/getcolor.h src/save.c src/show.c src/tables.c
+	term/context.trm term/post.trm docs/gnuplot.doc demo/pm3dcolors.dem:
+
+	Remove vestigial implementation of YIQ colorspace.
+	The YIQ colorspace option for "set palette" was incorrectly implemented
+	back in the mists of time.  E.g. the parsing code enforces color
+	component range [0:1] but YIQ coefficients can be negative; syntax for
+	"set palette defined" is incompatible with negative values; YIQ_2_RGB
+	 uses incorrect transformation matrix.  No user interface to YIQ_2_RGB
+	was provided.  Thanks to Isao MORI <orios814@users.sf.net> for pointing
+	out the various fundamental flaws.
+
+2017-11-16  Ethan A Merritt  <merritt@u.washington.edu>
+
+	graphics.c (plot_vectors):
+	The code for drawing 2D  "plot ... with vectors" is redundant.
+	Replace the core of it with a call to draw_clip_arrow().
+
+	gadgets.c (draw_clip_arrow):
+	Do not call term->arrow() if the entire arrow is out of range.
+
+2017-11-16  Hans-Bernhard Broeker  <broeker@users.sourceforge.net>
+
+	* prepare (AUTOMAKE): Remove permission fix-up commands, in favour
+	of letting git handle this.
+
+	* missing config/djconfig.sh: Set permissions to executable.
+
 Release 5.2.2
 
-2017-11-15  Ethan A Merritt  <merritt@u.washington.edu>
+2017-11-08  Ethan A Merritt  <merritt@u.washington.edu>
 
 	* src/set.c (set_logscale):  If the axis is currently autoscaled and
 	the range limits still hold non-positive values from a previous state,
