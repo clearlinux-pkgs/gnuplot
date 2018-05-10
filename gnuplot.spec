@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.2.3
-Release  : 13
+Release  : 14
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.3/gnuplot-5.2.3.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.3/gnuplot-5.2.3.tar.gz
 Summary  : No detailed summary available
