@@ -1,3 +1,106 @@
+2018-05-31  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (eval_link_function) src/eval.c src/internal.c:
+	Prevent spurious evaluation of logscale axis values as UNDEFINED.
+	Various abnormal conditions during evaluation of an action table are
+	signalled by setting undefined=TRUE.  The code can check this flag
+	immediately after calling evaluate_at().  Routines map_x() and map_y()
+	improperly tested the flag after calling eval_link_function(), which
+	worked in the general case because eval_link_function itself calls
+	evaluate_at().  However the shortcut code to speed up logscale
+	transforms returns without calling evaluate_at() and thus did not
+	reset the undefined flag.  Enabling this shortcut in 5.2.3 introduced
+	a regression where successive calls to map axis coordinates all
+	returned with the undefined flag incorrectly set to TRUE.
+	
+	Now we reset the undefined flag explicitly in eval_link_function() so
+	that it is valid to test it immediately after a call to either
+	eval_link_function() or evaluate_at().
+	
+	Bug #2050
+
+2018-05-30  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/datafile.c:  Use of "autotitle columnhead" with plot style
+	histogram errorbars requires taking the title from column 1 rather
+	than column 2.
+
+2018-05-22  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot3d.c:  refresh_3dbounds must check both head and tail of each
+	vector for OUTRANGE.
+	Bug #1948
+
+2018-05-16  Miroslav Sulc <msulc@users.sourceforge.net>
+
+	* src/misc.c: Support ARGC/ARGV parameter convention for "call".
+	I.e. string variables ARG1 ARG2 ... are also accessible as
+	ARGV[1] ARGV[2] ... ARGV[ARGC].
+
+2018-05-09  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/boundary.c src/graph3d.c:  Consistent placement of timestamp at
+	true bottom of page.  In 2D plots move the key box upwards if necessary
+	to clear the timestamp (earlier versions moved the timestamp up instead).
+	In 3D plots always place the timestamp at the true page bottom (this
+	reverts the placement that that used in version 5.0).
+
+2018-05-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	Various sanity checks and variable initializations added to prevent
+	crashes found by fuzzing.
+
+	graph3d.c: revise MAP_HEIGHT macro to guarantee result is either 0 or 1
+	eval.c: revise Gstring to never store a STRING value with a NULL pointer
+	dumb.trm: guard against text output to out-of-range character cells
+	post.trm: guard against fontsize ever being set to zero
+
+2018-05-05  Dima Kogan  <dima@secretsauce.net>
+
+	* src/axis.h src/command.c src/plot2d.c src/plot3d.c:
+
+	Rework the "refresh" command to use autoscaled axis writeback/restore.
+	This mechanism replaces AXIS_INIT2D_REFRESH and AXIS_UPDATE2D_REFRESH.
+	"set xrange writeback" is now essentially always in effect.
+	"set xrange restore" still works as before.
+	Fixes buggy refresh of logscale inline data.
+	Fixes buggy axis ranges on refresh of splot with volatile data
+	(volatile.dem now highlights the error if you run previous code).
+
+	FIXME:  The new method works by always setting the WRITEBACK axis range
+	flag during plot commands.  Conceiveably some existing script depends on
+	a sequence of commands that includes "set xrange nowriteback" but I
+	do not know if there is a real-world example of that.
+
+2018-05-05  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/datafile.c src/datafile.h:  Skip evaluation of expressions in
+	a 'using" specifier that depend on a missing data value.  The presence
+	of a "missing" flag in the input is easy to detect if it is encountered
+	in place of a bare number ('using N'), but if it is encountered while
+	evaluating an expression ('using (func($N))') then the function may
+	exit via int_error() before the missing value can be flagged for the
+	calling code.  Now we pre-screen expressions in a using spec for the
+	presence of "$N" and note this dependence in a new field
+	use_spec->depends_on_column.  During data input if that field is
+	non-zero the corresponding column can be checked for a missing value
+	flag before evaluating the expression.
+	Bug #2042
+
+2018-05-05  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/term.c term/post.trm: Move postscript-specific fix from
+	ignore_enhanced() into ENHPS_put_text().
+
+	Bug #266 (from 2005) noted that the postscript terminal left whatever
+	font was last used in an enhanced text string active afterwards.
+	The fix at the time was to force all non-enhanced strings to reset the
+	font by putting a call term->set_font("") in ignore_enhanced.
+	This had other side effects (Bug #2033) and was only ever useful for
+	postscript output, so move the font reset into the postscript terminal.
+
+2018-05-04  Release 5.2.3
+
 2018-04-20  Ethan A Merritt  <merritt@u.washington.edu>
 
 	Bump version to 5.2.3
