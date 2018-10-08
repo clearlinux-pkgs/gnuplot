@@ -1,3 +1,158 @@
+2018-09-26  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot2d.c:  Fix regression in parametric plots with logscale x.
+	The check for logscaling in parametric plots was incorrectly made
+	against SAMPLE_AXIS rather than T_AXIS (not that we support logscale T).
+	So logscale x caused sample variable t to become 10^t.
+	This error was present in 5.2.0 through 5.2.4
+	Bug #2074
+
+2018-09-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/misc.c:  Resolve inconsistency in the type/content of arguments
+	to "call".  Now ARG1, ARG2, ... are always strings.
+	ARGV[1] ... are complex for numerical arguments, strings otherwise.
+	Thus after a call
+	    call 'routine_1.gp'  1 pi "title"
+	The three arguments are available inside routine_1.gp as follows
+	    ARG1 = "1"         ARGV[1] = 1.0
+	    ARG2 = "3.14159"   ARGV[2] = 3.14159265358979... 
+	    ARG3 = "title"     ARGV[3] = "title"
+	Bug #2073
+
+2018-09-13  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/command.c (array_command):  Allow size of an array to be
+	determined automatically from the number of initializers. E.g.
+	    array A = ["a","b","c"]
+	Backport from 5.3
+
+2018-09-12  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c src/plot2d.c:  Fix regressions in 5.2 polar plot mode.
+	trange was always interpreted as being in radians; now it tracks either
+	radians or degrees according to 'set angle'.
+	Clip radial grid lines and tick marks to current xrange and yrange.
+	Either show or don't show crossbar on radial error bars (no partial
+	clipping).
+	Bug #2072
+
+2018-09-06  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* configure.ac:  Switch the default configuration for wxt terminal to
+	./configure --without-wx-multithreaded.  On my current linux machines,
+	enabling wxgtk multithreading produces an unusable binary.  Others have
+	reported consistent problems.
+	Bug #1885
+
+	* src/util.c src/wxterminal/wxt_gui.cpp sec/term.c:  Always set numeric
+	locale to C following int_error() or terminal initialization.  This may
+	or may not catch asynchronous corruption of the program locale by
+	another thread or misbehaving library.
+	Bug #2069
+
+2018-08-29  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graph3d.c: Adjust axis tick and axis placement in 3D projections
+	onto the xz or yz plane.  2D projection onto the xy plane is handled as
+	a special case by "set view map".  Projections onto the xz or yz plane
+	also need special treatment so that the x and y axis ticks are drawn in
+	the plane of the graph rather than invisibly perpendicular.
+	Customize placement of x and y axis labels for xz and yz projections.
+	Azimuth +/-90 requires offset of z tic labels along y rather than x.
+
+2018-08-26  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c src/jitter.c src/jitter.h:   New jitter option
+	'set jitter vertical' jitters y coordinate rather than x coordinate.
+
+2018-08-26  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c:  Make "with image pixels" work on terminals that
+	support term->fillbox but not term->filled_polygon.
+	I.e. 2D images with axes parallel to x and y are ok.
+	This was always the intent, but the test for rectangular images was
+	missing in the "with image pixels" case.
+
+2018-08-10  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/plot3d.c: Clip 3D splot with labels to show only INRANGE points.
+	Bug #2068
+
+2018-08-09  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/linux.trm term/vgagl.trm:  DEPRECATE these terminals.
+	Both require support from svgalib, a corresponding custom kernal
+	module, and installation of gnuplot as suid root.  The configuration
+	option --with-linux-vga will be removed in a subsequent release.
+
+2018-07-25  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/pm3d.c:  Backport from 5.3
+	The flag controlling treatment of rgb colors was manipulated as if it
+	were a per-plot flag, but "set pm3d depthorder" merges all pm3d plots
+	together.  This meant that if some plots used a color column and some
+	did not, the depth-sorted combition colored some plots incorrectly.
+	Now we move the flag into the individual colored quadrangles by using
+	a magic grey value PM3D_USE_RGB_COLOR_INSTEAD_OF_GRAY.
+	Bug #2066
+
+2018-07-17  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/p3md.c src/pm3d.h save.c set.c:  Backport from 5.3
+	New option 'set pm3d depthorder base' sorts pm3d quadrangles on the
+	depth of the projected intersection  of the quadrangle with the base
+	plane z=0.  Useful for fence plots drawn with zerror.
+
+2018-06-29  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/multiplot.c src/multiplot.h src/unset.c:  The "reset" command
+	should not perturb current multiplot status.  This allows a reset
+	between plots in a multiplot.
+
+2018-06-27  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/interpol.c (mcs_interp):  The Fritsch-Carlson monotonic spline
+	algorithm leaves indeterminate what slope constraint to use at the first
+	and last data points.  Previously the first point used the input slope
+	but the last point used zero slope.  This is valid, but difference in
+	treatment of the two ends is unexpected.  Now we use the input slope
+	at both ends.
+	Bug #2055
+
+2018-06-20  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c (plot_f_bars plot_c_bars): Clip all elements of
+	candlesticks/financebars/boxplots against plot limits.
+	Bug #2056
+
+2018-06-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c (plot_lines):
+
+	Until now there have been two code paths to clip line segments to the
+	portion within a bounding box (usually the plot boundaries).
+	Plot styles "lines" and "linespoints" clip in the coordinate space
+	of the plot axes via routines edge_intersect() and two_edge_intersect().
+	Originally these routines had other callers as well, but those have all
+	been rewritten.  Most of them first transform into terminal coordinates
+	and then use draw_clip_line().  This split has led to clipping bugs that
+	affected only some objects or plot conditions, e.g.
+	Bugs #2030 #2046.
+	
+	Now we convert the routine graphics.c (plot_lines) to clip in terminal
+	coordinate space using draw_clip_line().  This leaves no remaining
+	callers of the edge_intersect routines, so remove them.
+	
+	Output before and after this change is not pixel-for-pixel identical
+	because the calculated intersection of a line with the bounding box
+	boundary comes out differ due to rounding when we are working in
+	terminal coordinates (int) rather than plot coordinates (double).
+
+2018-06-01  Release 5.2.4
+
+	Released earlier than usual in order to correct regressions in 5.2.3
+
 2018-05-31  Ethan A Merritt  <merritt@u.washington.edu>
 
 	* src/axis.c (eval_link_function) src/eval.c src/internal.c:
