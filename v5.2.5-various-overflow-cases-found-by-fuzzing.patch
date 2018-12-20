@@ -1,0 +1,217 @@
+From d9aa0fff654ad61e13005b44b4e4bfad9f7123cd Mon Sep 17 00:00:00 2001
+From: Ethan A Merritt <merritt@u.washington.edu>
+Date: Mon, 19 Nov 2018 11:35:25 -0800
+Subject: [PATCH] various overflow cases found by fuzzing
+
+Credits:
+    Tim Blazytko
+    Cornelius Aschermann
+    Sergej Schumilo
+    Nils Bars
+
+Bug 2088: term.c(strlen_tex)
+Bug 2089: metapost.trm tgif.trm (arbitrarily long font name)
+Bug 2092: cgm.trm overwrites trailing '\0' in default font name
+	  also context.trm emf.trm
+Bug 2094: also post.trm
+Bug 2093: datafile.c expand df_line on input as necessary to hold string data
+Bug 2095: eepic.trm (EEPIC_put_text) ignore request to print empty string
+
+Signed-off-by: Arzhan Kinzhalin <arzhan.i.kinzhalin@intel.com>
+---
+ src/datafile.c    | 11 +++++++----
+ src/set.c         |  4 ++--
+ src/term.c        |  2 +-
+ term/cgm.trm      |  9 ++-------
+ term/context.trm  |  4 ++--
+ term/eepic.trm    |  3 +++
+ term/emf.trm      |  4 ++--
+ term/metapost.trm |  2 +-
+ term/post.trm     |  2 +-
+ term/tgif.trm     |  2 +-
+ 10 files changed, 22 insertions(+), 21 deletions(-)
+
+diff --git a/src/datafile.c b/src/datafile.c
+index 610ee676d..dbecada81 100644
+--- a/src/datafile.c
++++ b/src/datafile.c
+@@ -5622,10 +5622,13 @@ df_generate_ascii_array_entry()
+ 	return NULL;
+ 
+     entry = &(df_array->udv_value.v.value_array[df_array_index]);
+-    if (entry->type == STRING)
+-	sprintf(df_line, "%d \"%s\"", df_array_index, entry->v.string_val);
+-    else
+-	sprintf(df_line, "%d %g", df_array_index, real(entry));
++    if (entry->type == STRING) {
++	while (max_line_len < strlen(entry->v.string_val))
++	    df_line = gp_realloc(df_line, max_line_len *= 2, "datafile line buffer");
++	snprintf(df_line, max_line_len-1, "%d \"%s\"", df_array_index, entry->v.string_val);
++    } else {
++	snprintf(df_line, max_line_len-1, "%d %g", df_array_index, real(entry));
++    }
+ 	
+     return df_line;
+ }
+diff --git a/src/set.c b/src/set.c
+index 399f18824..202f7abbb 100644
+--- a/src/set.c
++++ b/src/set.c
+@@ -1163,7 +1163,7 @@ set_clabel()
+     c_token++;
+     clabel_onecolor = FALSE;
+     if ((new_format = try_to_get_string())) {
+-	strncpy(contour_format, new_format, sizeof(contour_format));
++	safe_strncpy(contour_format, new_format, sizeof(contour_format));
+ 	free(new_format);
+     }
+ }
+@@ -1319,7 +1319,7 @@ set_cntrlabel()
+ 	    char *new;
+ 	    c_token++;
+ 	    if ((new = try_to_get_string()))
+-		strncpy(contour_format,new,sizeof(contour_format));
++		safe_strncpy(contour_format,new,sizeof(contour_format));
+ 	    free(new);
+ 	} else if (equals(c_token, "font")) {
+ 	    char *ctmp;
+diff --git a/src/term.c b/src/term.c
+index 49322da79..df551d7ce 100644
+--- a/src/term.c
++++ b/src/term.c
+@@ -2956,7 +2956,7 @@ strlen_tex(const char *str)
+ 	switch (*s) {
+ 	case '[':
+ 		while (*s && *s != ']') s++;
+-		s++;
++		if (*s) s++;
+ 		break;
+ 	case '\\':
+ 		s++;
+diff --git a/term/cgm.trm b/term/cgm.trm
+index 25ed08f1c..cb5de7bd4 100644
+--- a/term/cgm.trm
++++ b/term/cgm.trm
+@@ -473,7 +473,7 @@ CGM_options()
+ 			font_index = 1;
+ 		    } else
+ 			free(s);
+-		    strncpy(cgm_font, cgm_font_data[font_index-1].name, sizeof(cgm_font));
++		    safe_strncpy(cgm_font, cgm_font_data[font_index-1].name, sizeof(cgm_font));
+ 
+ 		} else {
+ 		      /* the user is specifying the font size */
+@@ -830,12 +830,7 @@ CGM_set_font(const char *font)
+ 
+     {
+       char *s = cgm_font_data[font_index-1].name;
+-
+-      len = strlen(s);
+-      if (len > 31)
+-	len = 31;
+-      strncpy(cgm_font, s, len);
+-      cgm_font[len] = NUL;
++      safe_strncpy(cgm_font, s, sizeof(cgm_font));
+     }
+ 
+     /* set font size */
+diff --git a/term/context.trm b/term/context.trm
+index d6b533c49..935504506 100644
+--- a/term/context.trm
++++ b/term/context.trm
+@@ -593,7 +593,7 @@ CONTEXT_options()
+ 			if ((tmp_string = try_to_get_string()) && (tmp_string != NULL)) {
+ 				CONTEXT_fontstring_parse(tmp_string, tmp_font, MAX_ID_LEN+1, &tmp_fontsize);
+ 				/* copies font name to parameters */
+-				strncpy(CONTEXT_params.font, tmp_font, sizeof(CONTEXT_params.font));
++				safe_strncpy(CONTEXT_params.font, tmp_font, sizeof(CONTEXT_params.font));
+ 				tmp_font[MAX_ID_LEN] = NUL;
+ 				free(tmp_string);
+ 				/* save font size:
+@@ -1379,7 +1379,7 @@ CONTEXT_set_font(const char *font)
+ 
+ 	/* saves font name & family to CONTEXT_font */
+ 	CONTEXT_fontstring_parse((char *)font, CONTEXT_font, sizeof(CONTEXT_font), &CONTEXT_fontsize_explicit);
+-	strncpy(CONTEXT_font_explicit, CONTEXT_font, sizeof(CONTEXT_font_explicit));
++	safe_strncpy(CONTEXT_font_explicit, CONTEXT_font, sizeof(CONTEXT_font_explicit));
+ 
+ 	/* valid fontsize has been provided */
+ 	if (CONTEXT_fontsize_explicit > 0.) { /* XXX: if valid */
+diff --git a/term/eepic.trm b/term/eepic.trm
+index 7d25a9a73..28417dd90 100644
+--- a/term/eepic.trm
++++ b/term/eepic.trm
+@@ -375,6 +375,9 @@ EEPIC_put_text(unsigned int x, unsigned int y, const char str[])
+ {
+     int i, l;
+ 
++    if (*str == '\0')
++	return;
++
+     EEPIC_endline();
+ 
+     fprintf(gpoutfile, "\\put(%d,%d)", x, y);
+diff --git a/term/emf.trm b/term/emf.trm
+index f1b01e81a..f0abc91db 100644
+--- a/term/emf.trm
++++ b/term/emf.trm
+@@ -790,7 +790,7 @@ EMF_options()
+ 		*comma = '\0';
+ 	    }
+ 	    if (*s)
+-		strncpy(emf_defaultfontname, s, sizeof(emf_defaultfontname));
++		safe_strncpy(emf_defaultfontname, s, sizeof(emf_defaultfontname));
+ 	    free(s);
+ 	    if (isanumber(c_token)) {
+ 		emf_defaultfontsize = int_expression();
+@@ -1865,7 +1865,7 @@ ENHemf_put_text(unsigned int x, unsigned int y, const char *str)
+ 
+     /* set up the global variables needed by enhanced_recursion() */
+     enhanced_fontscale = 1.0;
+-    strncpy(enhanced_escape_format,"&#x%2.2x;",sizeof(enhanced_escape_format));
++    safe_strncpy(enhanced_escape_format,"&#x%2.2x;",sizeof(enhanced_escape_format));
+ 
+     ENHemf_opened_string = FALSE;
+     ENHemf_overprint = 0;
+diff --git a/term/metapost.trm b/term/metapost.trm
+index 3cf4e97cf..da2deecec 100644
+--- a/term/metapost.trm
++++ b/term/metapost.trm
+@@ -320,7 +320,7 @@ MP_options()
+ 	    char *s;
+ 	    if ((s = try_to_get_string())) {
+ 		int sep = strcspn(s,",");
+-		if (sep > 0) {
++		if (0 < sep && sep < sizeof(MP_fontname)) {
+ 		    strncpy(MP_fontname, s, sizeof(MP_fontname));
+ 		    MP_fontname[sep] = '\0';
+ 		}
+diff --git a/term/post.trm b/term/post.trm
+index 152a3b4e7..f2b9ac8db 100644
+--- a/term/post.trm
++++ b/term/post.trm
+@@ -1194,7 +1194,7 @@ PS_options()
+ 	term->h_char = (unsigned int)(ps_fontsize*PS_SCF*5/10);
+     else
+ 	term->h_char = (unsigned int)(ps_fontsize*PS_SCF*6/10);
+-    sprintf(PS_default_font,"%s,%g",ps_params->font,ps_fontsize);
++    snprintf(PS_default_font, sizeof(PS_default_font)-1, "%s, %.2g", ps_params->font, ps_fontsize);
+ 
+     if (ps_params->terminal == PSTERM_POSTSCRIPT) {
+ 	if (ps_params->first_fontfile) {
+diff --git a/term/tgif.trm b/term/tgif.trm
+index acf8692e3..52e9db7f2 100644
+--- a/term/tgif.trm
++++ b/term/tgif.trm
+@@ -369,7 +369,7 @@ TGIF_options()
+ 		int sep = strcspn(s,",");
+ 		if (s[sep] == ',' && (1 == sscanf(&s[sep+1],"%lf",&fontsize)))
+ 		    uActFontSize =  (int)(fontsize+0.5);
+-		if (sep > 0) {
++		if (0 < sep && sep < sizeof(sActFont)) {
+ 		    strncpy(sActFont, s, sizeof(sActFont));
+ 		    sActFont[sep] = NUL;
+ 		}
+-- 
+2.20.0
+

@@ -4,15 +4,17 @@
 #
 Name     : gnuplot
 Version  : 5.2.5
-Release  : 17
+Release  : 18
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.5/gnuplot-5.2.5.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.5/gnuplot-5.2.5.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : gnuplot
-Requires: gnuplot-bin
-Requires: gnuplot-data
-Requires: gnuplot-man
+Requires: gnuplot-bin = %{version}-%{release}
+Requires: gnuplot-data = %{version}-%{release}
+Requires: gnuplot-libexec = %{version}-%{release}
+Requires: gnuplot-license = %{version}-%{release}
+Requires: gnuplot-man = %{version}-%{release}
 BuildRequires : buildreq-kde
 BuildRequires : buildreq-qmake
 BuildRequires : emacs
@@ -26,6 +28,7 @@ BuildRequires : pkgconfig(ice)
 BuildRequires : pkgconfig(libturbojpeg)
 BuildRequires : pkgconfig(xpm)
 BuildRequires : readline-dev
+Patch1: v5.2.5-various-overflow-cases-found-by-fuzzing.patch
 
 %description
 The Gnuplot Plotting Utility
@@ -43,6 +46,8 @@ easily extensible to include new devices.
 Summary: bin components for the gnuplot package.
 Group: Binaries
 Requires: gnuplot-data = %{version}-%{release}
+Requires: gnuplot-libexec = %{version}-%{release}
+Requires: gnuplot-license = %{version}-%{release}
 Requires: gnuplot-man = %{version}-%{release}
 
 %description bin
@@ -57,13 +62,21 @@ Group: Data
 data components for the gnuplot package.
 
 
-%package doc
-Summary: doc components for the gnuplot package.
-Group: Documentation
-Requires: gnuplot-man = %{version}-%{release}
+%package libexec
+Summary: libexec components for the gnuplot package.
+Group: Default
+Requires: gnuplot-license = %{version}-%{release}
 
-%description doc
-doc components for the gnuplot package.
+%description libexec
+libexec components for the gnuplot package.
+
+
+%package license
+Summary: license components for the gnuplot package.
+Group: Default
+
+%description license
+license components for the gnuplot package.
 
 
 %package man
@@ -76,22 +89,23 @@ man components for the gnuplot package.
 
 %prep
 %setup -q -n gnuplot-5.2.5
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1538981485
+export SOURCE_DATE_EPOCH=1545279876
 %configure --disable-static
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1538981485
+export SOURCE_DATE_EPOCH=1545279876
 rm -rf %{buildroot}
-mkdir -p %{buildroot}/usr/share/doc/gnuplot
-cp Copyright %{buildroot}/usr/share/doc/gnuplot/Copyright
-cp config/MacOSX/PkgResources/License.rtf %{buildroot}/usr/share/doc/gnuplot/config_MacOSX_PkgResources_License.rtf
+mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
+cp Copyright %{buildroot}/usr/share/package-licenses/gnuplot/Copyright
+cp config/MacOSX/PkgResources/License.rtf %{buildroot}/usr/share/package-licenses/gnuplot/config_MacOSX_PkgResources_License.rtf
 %make_install
 
 %files
@@ -100,8 +114,6 @@ cp config/MacOSX/PkgResources/License.rtf %{buildroot}/usr/share/doc/gnuplot/con
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/gnuplot
-/usr/libexec/gnuplot/5.2/gnuplot_qt
-/usr/libexec/gnuplot/5.2/gnuplot_x11
 
 %files data
 %defattr(-,root,root,-)
@@ -144,10 +156,15 @@ cp config/MacOSX/PkgResources/License.rtf %{buildroot}/usr/share/doc/gnuplot/con
 /usr/share/gnuplot/5.2/qt/qtgnuplot_fr.qm
 /usr/share/gnuplot/5.2/qt/qtgnuplot_ja.qm
 
-%files doc
+%files libexec
+%defattr(-,root,root,-)
+/usr/libexec/gnuplot/5.2/gnuplot_qt
+/usr/libexec/gnuplot/5.2/gnuplot_x11
+
+%files license
 %defattr(0644,root,root,0755)
-/usr/share/doc/gnuplot/Copyright
-/usr/share/doc/gnuplot/config_MacOSX_PkgResources_License.rtf
+/usr/share/package-licenses/gnuplot/Copyright
+/usr/share/package-licenses/gnuplot/config_MacOSX_PkgResources_License.rtf
 
 %files man
 %defattr(0644,root,root,0755)
