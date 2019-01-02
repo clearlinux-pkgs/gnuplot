@@ -1,3 +1,17 @@
+Changes in 5.2.6
+================
+* NEW keyword "keyentry" places an entry in the key without actually plotting
+* NEW "set style boxplot medianlinewidth <lw>"
+* CHANGE drop non-working support for CIE/XYZ color space
+* CHANGE strptime ignores content read with format a/A/w/W
+* FIX various corner-case bugs and overruns found by fuzzing
+* FIX revise waitforinput in x11 terminal
+* FIX revise waitforinput and terminal close events in qt terminal
+* FIX revise waitforinput and new window events in monothreaded wxt terminal
+* FIX lua.trm compatibility with lua version 5.3
+* FIX error line reporting inside an if/else bracketed clause
+* FIX error in date conversion for times within a nanosecond of a year boundary
+
 Changes in 5.2.5
 ================
 * NEW "set pm3d depthorder base" sorts pm3d quadrangles by projecting to z=0

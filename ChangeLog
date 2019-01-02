@@ -1,3 +1,124 @@
+2018-12-24  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* docs/titlepag.tex src/version.c configure.ac RELEASE_NOTES:
+	Bump version to 2.6
+
+2018-11-21  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/time.c (ggmtime): Allow for round-off error in date conversion
+	
+	The reported case was converting time = -1.75145e-13 seconds
+	Round-off error put this initially in 1969, but counting out seconds
+	per hour/day/month/ put it back at 1970 time 0 described as 1969
+	month 13.  It looks to me that the same error could in principle
+	trigger at any year boundary, so test explicitly for month wrap-around.
+	Bug #2087
+	
+	reported by: Tim Blazytko, Cornelius Aschermann, Sergej Schumilo, Nils Bars
+
+2018-11-20  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* various overflow cases found by fuzzing
+	Credits:
+	    Tim Blazytko
+	    Cornelius Aschermann
+	    Sergej Schumilo
+	    Nils Bars
+	
+	Bug 2088: term.c(strlen_tex)
+	Bug 2089: cairo.trm metapost.trm tgif.trm (arbitrarily long font name)
+	Bug 2092: cgm.trm overwrites trailing '\0' in default font name
+	      also context.trm emf.trm
+	Bug 2094: also post.trm
+	Bug 2093: datafile.c expand df_line on input as necessary to hold string data
+	Bug 2095: eepic.trm (EEPIC_put_text) ignore request to print empty string
+	Bug 2096: buffer underrun if input line begins with '\0'
+
+2018-11-15  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/boundary.c src/gp_types.h src/graph3d.c src/graphics.c
+	src/hidden3d.c src/parse.c src/plot2d.c src/plot3d.c:
+
+	New keyword "keyentry" for both plot and splot commands. This places
+	a line in the key but does not produce a corresponding plot.  The
+	usual line/fill/style/title options control what symbol and text is
+	used in the key entry.
+
+	* demo/custom_key.dem demo/keyentry.dem
+
+	* docs/gnuplot.doc docs/plotstyles.gnu
+
+2018-11-14  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/util.c (print_line_with_error): Each if/else bracketed clause
+	calls lf_push with NULL filename.  To retrieve the filename for error
+	reporting we must unwind the lf stack.
+
+2018-11-11  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* term/lua.trm:  Replace lua_tointeger() with lua_tonumber() everywhere.
+	Apparently lua 5.3 has changed the behavior of tointeger() and it now
+	fails for easily-hit cases in gnuplot.
+	Bug #2084
+
+2018-11-08  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/boundary.c:  Relax limit on extreme aspect ration of plot and
+	apply the scaling after warning even if the limit is exceeded.
+
+2018-10-29  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/wxterminal/wxt_gui.cpp: monothreaded wxt terminal needs a mutex
+	to prevent recursion.  When a new plot window is created,
+	e.g. 'set term wxt <new_id>', creation of the new window must lock out
+	other operations otherwise the new window request is sent again and an
+	infinite recursion can result.  Since we don't have a new window yet I
+	can't use the window mutex, so I hard-wired one named wxt_interlock.
+	Does not affect multithreaded wxt or windows.
+
+2018-10-28  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/getcolor.c src/save.c src/set.c src/show.c src/tables.c
+	demo/pm3dcolors.dem:
+
+	Remove broken support for CIE/XYZ color space.  As reported by 
+	Risto A. Paju, the XYZ->RGB transformation in getcolor.c is not correct.
+	Furthermore it has never been correct.  As with the YIQ color space
+	support removed a while ago, the transformation matrix was apparently
+	never checked and hence any script that relied on it never produced
+	correct output.
+	Replace the black->gold palette example with an RGB space equivalent.
+	Bug #2078
+
+2018-10-18  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* datafile.c (df_open): "stats 'foo.dat' noautoscale"
+	* graphics.c (plot_boxplot): bail early on empty data set
+	* graphics.c (process_image): cannot clip if there is no bounding box
+	* plot3d.c: "with vectors" style is not possible for a function splot
+	* plot3d.c: cannot contour a plot with NODATA
+	* term.c (estimate_strlen): mark string parameter as (const char *)
+	* dumb.trm (ENHdumb_put_text): range-check (x,y) coords of enhanced text
+	* post.trm (PS_options): Sanity check font size must be < 1000.
+	* svg.trm (ENHsvg_writec): split output text into buffer-sized chunks
+
+	Corner-case bugs found by afl-fuzz
+
+2018-10-11  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/gadgets.h src/graphics.c src/plot2d.c src/set.c demo/boxplot.dem:
+	New command option 'set style boxplot medianlinewidth <lw>'
+	can be used to emphasize the position of the median.
+
+2018-10-11  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/libcerf.c:  Version 1.7 of libcerf introduced a conflicting
+	definition of "cmplx". Fortunately it is nice enough to handle the
+	conflict if detected, but that means our definition of cmplx in
+	cp_types.h must come before inclusion of cerf.h.
+
+2018-10-06  Release 5.2.5
+
 2018-09-26  Ethan A Merritt  <merritt@u.washington.edu>
 
 	* src/plot2d.c:  Fix regression in parametric plots with logscale x.
