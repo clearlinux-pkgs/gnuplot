@@ -1,6 +1,4 @@
 5.2.6
 emacs
 ncurses-dev
-pkgconfig(ice)
 readline-dev
-xemacs

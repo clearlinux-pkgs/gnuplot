@@ -4,10 +4,10 @@
 #
 Name     : gnuplot
 Version  : 5.2.6
-Release  : 20
+Release  : 21
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.6/gnuplot-5.2.6.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.6/gnuplot-5.2.6.tar.gz
-Summary  : Plotting package which outputs to X11, PostScript, PNG, GIF, and others
+Summary  : No detailed summary available
 Group    : Development/Tools
 License  : gnuplot
 Requires: gnuplot-bin = %{version}-%{release}
@@ -24,11 +24,9 @@ BuildRequires : pkgconfig(cairo)
 BuildRequires : pkgconfig(gdlib)
 BuildRequires : pkgconfig(gtk+-2.0)
 BuildRequires : pkgconfig(gtk+-3.0)
-BuildRequires : pkgconfig(ice)
 BuildRequires : pkgconfig(libturbojpeg)
 BuildRequires : pkgconfig(xpm)
 BuildRequires : readline-dev
-BuildRequires : xemacs
 
 %description
 The Gnuplot Plotting Utility
@@ -48,7 +46,6 @@ Group: Binaries
 Requires: gnuplot-data = %{version}-%{release}
 Requires: gnuplot-libexec = %{version}-%{release}
 Requires: gnuplot-license = %{version}-%{release}
-Requires: gnuplot-man = %{version}-%{release}
 
 %description bin
 bin components for the gnuplot package.
@@ -95,12 +92,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1546437447
+export SOURCE_DATE_EPOCH=1558376290
+export GCC_IGNORE_WERROR=1
+export LDFLAGS="${LDFLAGS} -fno-lto"
 %configure --disable-static
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1546437447
+export SOURCE_DATE_EPOCH=1558376290
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp Copyright %{buildroot}/usr/share/package-licenses/gnuplot/Copyright
