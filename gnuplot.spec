@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.2.7
-Release  : 22
+Release  : 23
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.7/gnuplot-5.2.7.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.7/gnuplot-5.2.7.tar.gz
 Summary  : Plotting package which outputs to X11, PostScript, PNG, GIF, and others
