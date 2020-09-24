@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.4.0
-Release  : 25
+Release  : 26
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.0/gnuplot-5.4.0.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.0/gnuplot-5.4.0.tar.gz
 Summary  : No detailed summary available
