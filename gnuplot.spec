@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.4.0
-Release  : 26
+Release  : 27
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.0/gnuplot-5.4.0.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.0/gnuplot-5.4.0.tar.gz
 Summary  : No detailed summary available
@@ -27,6 +27,7 @@ BuildRequires : pkgconfig(gtk+-3.0)
 BuildRequires : pkgconfig(libturbojpeg)
 BuildRequires : pkgconfig(xpm)
 BuildRequires : readline-dev
+Patch1: CVE-2020-25412.patch
 
 %description
 The Gnuplot Plotting Utility
@@ -86,26 +87,27 @@ man components for the gnuplot package.
 %prep
 %setup -q -n gnuplot-5.4.0
 cd %{_builddir}/gnuplot-5.4.0
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1595264287
+export SOURCE_DATE_EPOCH=1601510107
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1595264287
+export SOURCE_DATE_EPOCH=1601510107
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-5.4.0/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4
