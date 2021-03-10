@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.4.1
-Release  : 28
+Release  : 29
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.1/gnuplot-5.4.1.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.1/gnuplot-5.4.1.tar.gz
 Summary  : No detailed summary available
@@ -92,7 +92,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1606852273
+export SOURCE_DATE_EPOCH=1615417397
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -105,7 +105,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-stron
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1606852273
+export SOURCE_DATE_EPOCH=1615417397
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-5.4.1/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4
