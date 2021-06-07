@@ -1,20 +1,17 @@
-Configure miss: library containing cdawson
-Configure miss: latex2e
-Configure miss: troff
-Configure miss: latex2html
-Configure miss: kpsexpand
-Configure miss: texhash
+Configure miss: Alpha/AXP CPU
+Configure miss: BeOS
 Configure miss: MS-DOS/djgpp/libGRX
 Configure miss: Mac OS X
-Configure miss: BeOS
-Configure miss: Alpha/AXP CPU
-Configure miss: sys/bsdtypes.h usability
-Configure miss: sys/bsdtypes.h presence
-Configure miss: sys/bsdtypes.h
-Configure miss: libc.h usability
-Configure miss: libc.h presence
-Configure miss: libc.h
 Configure miss: doprnt
-Configure miss: if malloc(0) returns 0
 Configure miss: gdImageCreateTrueColor in -lgd
+Configure miss: if malloc(0) returns 0
+Configure miss: latex2html
+Configure miss: libc.h
+Configure miss: libc.h presence
+Configure miss: libc.h usability
+Configure miss: library containing cdawson
+Configure miss: sys/bsdtypes.h
+Configure miss: sys/bsdtypes.h presence
+Configure miss: sys/bsdtypes.h usability
+Configure miss: troff
 Configure miss: wx-config
