@@ -12,4 +12,3 @@ QtCore
 QtGui
 QtNetwork
 QtSvg
-libcerf

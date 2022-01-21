@@ -4,7 +4,7 @@
 #
 Name     : gnuplot
 Version  : 5.4.3
-Release  : 33
+Release  : 34
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz
 Summary  : No detailed summary available
@@ -18,6 +18,7 @@ Requires: gnuplot-man = %{version}-%{release}
 BuildRequires : buildreq-kde
 BuildRequires : buildreq-qmake
 BuildRequires : emacs-x11
+BuildRequires : libcerf-dev
 BuildRequires : llvm
 BuildRequires : lua-dev
 BuildRequires : ncurses-dev
@@ -94,7 +95,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1642777923
+export SOURCE_DATE_EPOCH=1642779052
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -108,7 +109,7 @@ export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto -fstack-protector-st
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1642777923
+export SOURCE_DATE_EPOCH=1642779052
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-5.4.3/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4
