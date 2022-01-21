@@ -1,0 +1,2 @@
+--with-readline=builtin
+--enable-history-file
