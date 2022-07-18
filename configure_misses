@@ -3,15 +3,14 @@ Configure miss: BeOS
 Configure miss: MS-DOS/djgpp/libGRX
 Configure miss: Mac OS X
 Configure miss: doprnt
-Configure miss: gdImageCreateTrueColor in -lgd
+Configure miss: g++ option to enable C++11 features
+Configure miss: gcc options needed to detect all undeclared functions
+Configure miss: gdlib-config
 Configure miss: if malloc(0) returns 0
 Configure miss: latex2html
 Configure miss: libc.h
-Configure miss: libc.h presence
-Configure miss: libc.h usability
-Configure miss: library containing cdawson
 Configure miss: sys/bsdtypes.h
-Configure miss: sys/bsdtypes.h presence
-Configure miss: sys/bsdtypes.h usability
 Configure miss: troff
+Configure miss: whether the compiler supports GNU Objective C
 Configure miss: wx-config
+Configure miss: x86_64-generic-linux-gnu-clang
