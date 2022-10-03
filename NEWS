@@ -1,3 +1,21 @@
+Changes in 5.4.5
+================
+* NEW    "set key offset <dx>, <dy>" tweaks placement of the key
+* NEW    data-driven histogram colors (variable color from extra using column)
+* CHANGE re-order 3D labels to come after pm3d depthorder surfaces
+* CHANGE hpgl: add terminal option "fontscale <value>"
+* CHANGE for nonuniform matrix data, column(0) returns linear position in matrix
+* CHANGE set pointintervalbox 0 disables drawing the background box Bug #2544
+* FIX    svg: hypertext font handling
+* FIX    track columnheaders of multiple data blocks in a single file Bug #2538
+* FIX    Clean up positioning of polar border, raxis, and theta tics Bug #2130
+* FIX    Autoscaling of logscaled raxis
+* FIX    memory corruption if a small plot structure is recycled Bug #2550
+* FIX    Windows qt terminal:  "pause -1" should not block mousing Bug #2549
+* FIX    promotion of string to integer should not assume leading 0 means octal
+         The was a regression in 5.4.4                           Bug #2551
+* FIX    invalid free of active datablock
+
 Changes in 5.4.4
 ================
 * NEW plots can use arrow styles that specify "lc rgb variable" 
