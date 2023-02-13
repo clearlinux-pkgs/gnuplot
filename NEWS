@@ -1,3 +1,23 @@
+Changes in 5.4.6
+================
+* NEW    set key {columns <exact no of columns>}
+	 set key {keywidth <exact width>}
+* NEW    XDG support
+	   startup file:      $XDG_CONFIG_HOME/gnuplot/gnuplotrc
+	   history file:      $XDG_STATE_HOME/gnuplot_history
+	   wxt configuration: $XDG_CONFIG_HOME/gnuplot/gnuplot-wxt.conf
+* CHANGE remove "alldoc" build target
+* CHANGE plot with polygons fillstyle empty really does mean empty
+* FIX    windows: various problems mixing piped input and stdin        Bug #2491
+* FIX    x11: bad interactions of lt nodraw, bgnd and dash pattern     Bug #2572
+* FIX    wxt: export-to-file widget should preserve line properties
+* FIX	 svg: set initial default fill to "none"
+* FIX    png: back-compatibility with very old versions of gdlib       Bug #2579
+* FIX    variable pointtype, pointsize in plot style yerrorlines
+* FIX	 border color for polygons with variable fillcolor
+* FIX	 definition followed by iteration in a plot command            Bug #2580
+* FIX	 parametric plot with filledcurves y1=<limit>                  Bug #1797
+
 Changes in 5.4.5
 ================
 * NEW    "set key offset <dx>, <dy>" tweaks placement of the key
