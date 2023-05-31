@@ -5,7 +5,7 @@
 #
 Name     : gnuplot
 Version  : 5.4.7
-Release  : 39
+Release  : 40
 URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.7/gnuplot-5.4.7.tar.gz
 Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.7/gnuplot-5.4.7.tar.gz
 Summary  : No detailed summary available
@@ -100,7 +100,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1684701470
+export SOURCE_DATE_EPOCH=1685542792
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -125,7 +125,7 @@ export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
 make  %{?_smp_mflags}
 popd
 %install
-export SOURCE_DATE_EPOCH=1684701470
+export SOURCE_DATE_EPOCH=1685542792
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-%{version}/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4 || :
