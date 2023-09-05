@@ -4,10 +4,10 @@
 # Using build pattern: configure
 #
 Name     : gnuplot
-Version  : 5.4.8
-Release  : 41
-URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.8/gnuplot-5.4.8.tar.gz
-Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.8/gnuplot-5.4.8.tar.gz
+Version  : 5.4.9
+Release  : 42
+URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.9/gnuplot-5.4.9.tar.gz
+Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.9/gnuplot-5.4.9.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : gnuplot
@@ -22,6 +22,11 @@ BuildRequires : emacs-x11
 BuildRequires : libcerf-dev
 BuildRequires : llvm
 BuildRequires : lua-dev
+BuildRequires : pkgconfig(Qt6Core)
+BuildRequires : pkgconfig(Qt6Gui)
+BuildRequires : pkgconfig(Qt6Network)
+BuildRequires : pkgconfig(Qt6PrintSupport)
+BuildRequires : pkgconfig(Qt6Svg)
 BuildRequires : pkgconfig(cairo)
 BuildRequires : pkgconfig(gdlib)
 BuildRequires : pkgconfig(gtk+-2.0)
@@ -89,10 +94,10 @@ man components for the gnuplot package.
 
 
 %prep
-%setup -q -n gnuplot-5.4.8
-cd %{_builddir}/gnuplot-5.4.8
+%setup -q -n gnuplot-5.4.9
+cd %{_builddir}/gnuplot-5.4.9
 pushd ..
-cp -a gnuplot-5.4.8 buildavx2
+cp -a gnuplot-5.4.9 buildavx2
 popd
 
 %build
@@ -100,7 +105,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1686156386
+export SOURCE_DATE_EPOCH=1693940304
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -125,7 +130,7 @@ export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3"
 make  %{?_smp_mflags}
 popd
 %install
-export SOURCE_DATE_EPOCH=1686156386
+export SOURCE_DATE_EPOCH=1693940304
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-%{version}/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4 || :

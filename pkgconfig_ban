@@ -12,3 +12,4 @@ QtCore
 QtGui
 QtNetwork
 QtSvg
+Qt6Core5Compat
