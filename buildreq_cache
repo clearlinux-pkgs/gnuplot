@@ -1,7 +1,6 @@
-5.4.9
+5.4.10
 llvm
 pkgconfig(Qt6Core)
-pkgconfig(Qt6Core5Compat)
 pkgconfig(Qt6Gui)
 pkgconfig(Qt6Network)
 pkgconfig(Qt6PrintSupport)
