@@ -6,24 +6,24 @@ Configure miss: MS-DOS/djgpp/libGRX
 Configure miss: MS-DOS/djgpp/libGRX
 Configure miss: Mac OS X
 Configure miss: Mac OS X
+Configure miss: amos libraries using LDFLAGS: -Wl,--build-id=sha1 -L/usr/lib -lcerf  ... checking for library containing zairy_
+Configure miss: amos libraries using LDFLAGS: -Wl,--build-id=sha1 -m64 -march=x86-64-v3  -L/usr/lib -lcerf  ... checking for library containing zairy_
 Configure miss: doprnt
 Configure miss: doprnt
 Configure miss: g++ option to enable C++11 features
 Configure miss: g++ option to enable C++11 features
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: gcc options needed to detect all undeclared functions
-Configure miss: gdlib-config
-Configure miss: gdlib-config
 Configure miss: if malloc(0) returns 0
 Configure miss: if malloc(0) returns 0
-Configure miss: latex2html
-Configure miss: latex2html
 Configure miss: libc.h
 Configure miss: libc.h
+Configure miss: library containing cexint_
+Configure miss: library containing cexint_
+Configure miss: mergesort
+Configure miss: mergesort
 Configure miss: sys/bsdtypes.h
 Configure miss: sys/bsdtypes.h
-Configure miss: troff
-Configure miss: troff
 Configure miss: whether the compiler supports GNU Objective C
 Configure miss: whether the compiler supports GNU Objective C
 Configure miss: wx-config

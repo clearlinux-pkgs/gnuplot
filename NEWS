@@ -1,187 +1,49 @@
-Changes in 5.4.10
-=================
-* FIX	 postscript: build failed in 5.4.9 if neither gd nor cairo libraries present
-* FIX	 data-dependent variable point properties in polar plots
-* FIX    configure script modified to work with macOS+Homebrew
-* CHANGE use 64-bit integers for iteration (allows iteration over dates)
+Changes between 6.0-rc3 and 6.0
+===============================
 
+- Replotting and mousing multiplots
+	o now working much more comprehensively
+	o revert "set mouse multiplot" as a separate command; it's now always in effect
+- "plot with polygons" now guarantees that the border of each polygon is a closed curve
+- pdf output from the cairo terminals now conforms to %PDF-1.5
 
-Changes in 5.4.9
-================
-* NEW	 qt:  support building with Qt6
-* CHANGE check plugin version at time of import				Bug #2629
-* FIX	 prevent segfault if GNUPLOT_DRIVER_DIR is invalid
-* FIX	 (regression) only y autoscale yerrorbars to points in xrange   Bug #2631
-* FIX	 possible memory corruption if clipping causes 0-size polygons
-* FIX	 wxt: initialization of key box toggle state
-* FIX	 post: handle pixmaps                                           Bug #2644
+Changes between 6.0-rc2 and -rc3
+================================
 
-Changes in 5.4.8
-================
-* FIX	 version reporting in Windows binaries
-	 No other changes
+* partial support for replotting and mousing multiplots (finally!)
+* fixes build error for postscript terminal when libgd and cairo are not present
+* strip trailing CR from function blocks read from a dos file   Bug #2653
+* use 64-bit integers for iteration
+* "unset pointintervalbox" disables the box rather than setting it to default size
+* keyentry '...' can be used to place a secondary title in the key
+* fix use of stacked histograms with variable number of data columns
 
-Changes in 5.4.7
-================
+Changes between 6.0-rc1 and -rc2
+================================
+* Japanese documentation updated
+	(missing file title-ja.tex, build dependencies for mingw)
+* Support building against Qt6
+	(./configure falls back to Qt5 if the Qt6 libraries are not found)
+* New configure option --enable-stable-sort
+	1) Use mergesort rather than qsort if the system provides it.
+	2) If neither mergesort nor glibc stable qsort is available,
+	   modify internal gnuplot structures to contain a secondary sort key
+* Render color gradient in colorbox as a pixel array (cairo, qt terminals)
+* "reset session" restores initial state of all linetype properties
+* postscript terminal now handles pixmaps (Bug #2644)
+* New plot style "with contourfill" handles 2D and 3D contour plots with
+  discrete z-ranges indicated by solid fill colors.
 
-* FIX	 pseudofiles '+','++' must ignore "set datafile columnheader"  Bug #2585
-* FIX	 data from an array must ignore "set datafile columnheader"    Bug #2585
-* FIX	 various problems with unbounded plot iteration                Bug #2589
-* FIX	 allow plot ... smooth acsplines with filledcurves             Bug #2592
-* FIX    "plot title at {end|beginning}" belongs in KEYSAMPLE layer
-* FIX	 handle empty string in last field of csv file
-* FIX	 Handle nonlinear axes during contour generation               Bug #2593
-* FIX	 yerrorbars key sample should match bars in the plot           Bug #2598
-* FIX	 "plot with table" must skip all smoothing operations          Bug #2610
-* FIX	 cairolatex/epslatex: prevent doubled text in opaque textboxes
-* FIX	 wxt: versions prior to 3.0 do not support XDG                 Bug #2587
-* FIX	 wxt: fontscale and fontsize handling was inconsistent         Bug #2373
-* FIX	 tikz epslatex cairolatex: updated to work with TeXLive2023    Bug #2613
-* FIX	 correctly report cardinality of an empty array is zero        Bug #2616
-* FIX	 ignore datafile separator when plotting from an array
-* FIX	 combination of pm3d options "at b" or "at t" with "depthorder"
-* FIX	 combination of 'autotitle columnhead' and 'using col("key")'  Bug #2620
-* FIX	 do not complain if XDG files are not found because no $HOME   Bug #2623
-* FIX	 windows terminal: arrow length corrected for aspect ratio     Bug #2565
+* FIX do not clobber a datablock if its name is encountered unexpectedly
+* FIX cairo terminals:  ignore zero-size polygons
+* FIX svg terminal now correctly tracks pattern-fill color
+* FIX integer overflow/wraparound when polygon is clipped to plot border
+* FIX do not mangle variable point properties in polar mode Bug #2650
 
-Changes in 5.4.6
-================
-* NEW    set key {columns <exact no of columns>}
-	 set key {keywidth <exact width>}
-* NEW    XDG support
-	   startup file:      $XDG_CONFIG_HOME/gnuplot/gnuplotrc
-	   history file:      $XDG_STATE_HOME/gnuplot_history
-	   wxt configuration: $XDG_CONFIG_HOME/gnuplot/gnuplot-wxt.conf
-* CHANGE remove "alldoc" build target
-* CHANGE plot with polygons fillstyle empty really does mean empty
-* FIX    windows: various problems mixing piped input and stdin        Bug #2491
-* FIX    x11: bad interactions of lt nodraw, bgnd and dash pattern     Bug #2572
-* FIX    wxt: export-to-file widget should preserve line properties
-* FIX	 svg: set initial default fill to "none"
-* FIX    png: back-compatibility with very old versions of gdlib       Bug #2579
-* FIX    variable pointtype, pointsize in plot style yerrorlines
-* FIX	 border color for polygons with variable fillcolor
-* FIX	 definition followed by iteration in a plot command            Bug #2580
-* FIX	 parametric plot with filledcurves y1=<limit>                  Bug #1797
-
-Changes in 5.4.5
-================
-* NEW    "set key offset <dx>, <dy>" tweaks placement of the key
-* NEW    data-driven histogram colors (variable color from extra using column)
-* CHANGE re-order 3D labels to come after pm3d depthorder surfaces
-* CHANGE hpgl: add terminal option "fontscale <value>"
-* CHANGE for nonuniform matrix data, column(0) returns linear position in matrix
-* CHANGE set pointintervalbox 0 disables drawing the background box Bug #2544
-* FIX    svg: hypertext font handling
-* FIX    track columnheaders of multiple data blocks in a single file Bug #2538
-* FIX    Clean up positioning of polar border, raxis, and theta tics Bug #2130
-* FIX    Autoscaling of logscaled raxis
-* FIX    memory corruption if a small plot structure is recycled Bug #2550
-* FIX    Windows qt terminal:  "pause -1" should not block mousing Bug #2549
-* FIX    promotion of string to integer should not assume leading 0 means octal
-         The was a regression in 5.4.4                           Bug #2551
-* FIX    invalid free of active datablock
-
-Changes in 5.4.4
-================
-* NEW plots can use arrow styles that specify "lc rgb variable" 
-* CHANGE make page layout of "set view map; splot" more like that of "plot"
-*        - honor "set rmargin" and "set tmargin" Bug #2484
-*        - display x2label and y2label Bug #2484
-*        - revised placement of color box Bug #2484
-*        - reconcile linked axis data and tic ranges Bug #2483
-*        - apply "set key invert" to splot Bug #2381
-* CHANGE cairo terminals: increase internal oversampling factor Bugs #2499 #2369
-* CHANGE fig: restore terminal option "pointsmax <N>" Bug #2509
-* CHANGE always add a space between items in a "print" command Bug #2488
-* CHANGE consistent ordering of input columns for "plot ... ps var pt var" Bug #2524
-* CHANGE gnuplot -c script.gp A B -C ... will pass A B -C ... without interpretation
-* CHANGE stricter error checks when promoting string to numeric value Bug #2527
-* CHANGE report GPVAL_TERM_XMIN and friends as floating point values
-* FIX handle combination of axis properties logscale + autoscale + reverse Bug #2347
-* FIX mis-handled arguments at start-up of "gnuplot -c script arg1 ..." Bug #2493
-* FIX windows: redirected output of printf() Bug #2490
-* FIX allow variable point style and point type in plot "with yerrorbars"
-* FIX plots "with labels point pt variable" were off-by-one in choosing point type
-* FIX contour "with labels" from binary data
-* FIX x/y fractional coordinate mouse readout for nonlinear axes Bug #2526
-* FIX Support combination of "set surface explicit; set hidden3d" Bug #2521
-
-Changes in 5.4.3
-================
-* NEW "set pm3d border retrace" will use quadrangle color for the border
-* NEW "nogrid" flag for plots to opt out of dgrid3d processing
-* NEW option "above|below y=<val>" for "plot with fillsteps"
-* NEW "set style histogram nokeyseparators" suppress blank key entries Bug #2473
-* CHANGE always allow palette color for non-plot elements of 2D plot
-* FIX contours were incorrectly allocated space in the key even if "notitle"
-* FIX evaluation of unary minus in front of ternary operator Bug #2468
-* FIX arm and s390 require "signed char" Bugs #2467 #2450
-* FIX range errors if "smooth csplines" applied with x-axis reversed Bug #2465
-* FIX handle various corner cases found by fuzzing
-* FIX textcolor should accept "linetype N"  Bug #2459
-* FIX Windows:  handling of Window messages for piped input Bugs #2204 #2412
-* FIX aquaterm: auto-configuration use of Frameworks  Bug #2419
-* FIX qt:       pm3d quadrangle borders for transparent surfaces
-* FIX png/gif:  gdlib auto-configuration issues
-* FIX dumb:     limit enhanced text markup to single-line vertical displacement
-
-Changes in 5.4.2
-================
-* NEW in "using" context, $# means "number of columns in current data line"
-* NEW define on program entry:   I = sqrt(-1) = {0.,1.}
-* NEW support input data that uses epidemiological date-week formats
-* NEW optional fillcolor for "set key opaque"
-* NEW provide and document use of a plugin to provide uigamma function
-* CHANGE much improved domain and precision for igamma function
-* CHANGE generate only one key entry per multi-dataset input file Bug #2380
-* CHANGE (Windows): attempt to convert unicode on command line to UTF-8
-* CHANGE clip `with image` to plot boundary in 2D plots
-* CHANGE In gprintf format "%c", add no space for a null prefix Bug #2266
-* CHANGE Make auto-placement of left border less sensitive to plot size Bug #2415
-* FIX time formats %U %W Bug #2390
-* FIX cairo terminals: Do not lose font info during multi-line enhanced text
-* FIX left-justification of titles in splot with user-specified key position
-* FIX cairo terminals (Windows): ignore "text scaling" from user screen settings
-* FIX win: instabilities associated with changing window size Bug #2301 #2304
-* FIX pm: better mousing and font handling
-* FIX qt: prevent zombie gnuplot_qt process Bug #2188
-* FIX clipping of filled polygons that have only 1 or 2 vertices Bug #2400
-* FIX "set tics front" unexpectedly made all grid lines invisible
-* FIX more terminals support requested linewidth for textbox borders
-* FIX indexing of multiple matrix data sets in a single input file
-* FIX do not inject extra '\n' into input stream after 'set term' Bug #2292
-
-
-Changes in 5.4.1
-================
-* NEW "with rgbimage" and "with rgbalpha" accept single column ARGB input
-* NEW add toggle in toolbar widget for qt terminal option "ctrl-q"
-* NEW keyword "smooth kdensity period <val>"
-* NEW time format %tD encodes days relative to time 0
-* NEW pm3d quadrangles in 2D projection are clipped smoothly to x and y
-* CHANGE gif animation 'optimize' option is deprecated Bugs #1992 #2070 #2348
-* CHANGE svg increase coordinate precision to two decimal points Bug #2369
-* FIX y autoscaling of default "with filledcurves" #Bug 2294
-* FIX placement of mirrored x and y tics in mode 'set view projection ...'
-* FIX pm3d lighting calculation for degenerate quadrangles
-* FIX botched deprecation of old syntax for "call" arguments Bug #2298 #2368
-* FIX pm3d "depthorder" affects 'set obj polygon' with >4 vertices Bug #2297
-* FIX loss of precision for asin(x), asinh(x) with real x << 0 Bug #2302
-* FIX error handling of bad font name in enhanced text Bugs #2303 #2308
-* FIX incomplete domain for complex acosh(x), real x < -1 was treated as NaN
-* FIX error handling of fuzzed input  Bugs #2306 #2307 #2309 #2312 #2344
-* FIX add range check for plot of binned data (allows clipping on y)
-* FIX "unzoom" applied to autoscaled volatile data
-* FIX no default for binary columns needed if there is a 'using' spec Bug #2315
-* FIX buffer overflow of enhanced text fragment  Bugs #2310 #2311
-* FIX qnorm and Hann functions applied in dgrid3d Bugs #2277 #2318
-* FIX handling of dashtype given as a string with leading whitespace Bug #2336
-* FIX preserve key position across isolated instance of "title at x,y" Bug #2342
-* FIX contour labels had spurious point symbols
-* FIX allow "pointtype variable" in combination with jitter Bug #2354
-* FIX cgm: sanity for non-zero font size Bug #2358
-* FIX more checks for valid UTF-8 Bugs #2362 #2364
+Version 6.0
+==================
+  Too many changes between version 5 and version 6 to list here.
+  See Release Notes.
 
 Changes in 5.4
 ==============
@@ -216,7 +78,6 @@ Changes in 5.4
 * NEW Left-click on hypertext label will copy text to clipboard (wxt qt)
 * NEW smooth option "zsort" controls order that points are plotting in
 * NEW multiple textbox styles
-* NEW Time/date input recognizes format %p to handle am/pm field
 * EXPERIMENTAL "set mouse mouseformat function <stringval_from_xy(x,y)>"
 * EXPERIMENTAL load $DATABLOCK
 * CHANGE revised syntax for plot style "with parallelaxes"
@@ -237,13 +98,9 @@ Changes in 5.4
 * CHANGE boxplot outliers affect autoscaling only if they are enabled
 * CHANGE remove latex, emtex, eepic, and tpic terminals from default build
 * CHANGE pm3d quadrangles are by default clipped smoothly to zrange
-* CHANGE `set offset` is ignored when the axis range is not autoscaled
 * FIX allow mixed use of in-key plot titles and manually placed titles
 * FIX open/close path for polygons
 * FIX several stability issues of the caca terminal
-* FIX gd terminals: rendering of white lines with lw > 1
-* FIX do not reapply "set offset" on refresh or scrolling event
-* FIX for negative relative time format with leading element zero
 
 New features introduced to 5.2 in patchlevel releases
 =====================================================

@@ -6,10 +6,10 @@
 # autospec commit: c1050fe
 #
 Name     : gnuplot
-Version  : 5.4.10
-Release  : 44
-URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.10/gnuplot-5.4.10.tar.gz
-Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/5.4.10/gnuplot-5.4.10.tar.gz
+Version  : 6.0.0
+Release  : 45
+URL      : https://sourceforge.net/projects/gnuplot/files/gnuplot/6.0.0/gnuplot-6.0.0.tar.gz
+Source0  : https://sourceforge.net/projects/gnuplot/files/gnuplot/6.0.0/gnuplot-6.0.0.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : gnuplot
@@ -47,9 +47,9 @@ Gnuplot is a command-line driven interactive function plotting utility
 for linux, OSX, MSWin, VMS, and many other platforms.  The software is
 copyrighted but freely distributed (i.e., you don't have to pay for it).
 It was originally written to allow scientists and students to visualize
-mathematical functions and data.  Gnuplot supports many different types
-of terminals, plotters, and printers (including pseudo-devices like
-LaTeX) and is easily extensible to include new devices.
+mathematical functions and data.  Gnuplot supports output to many types
+of terminals, printers, and file formats.  It is easily extensible to
+include new devices.
 
 %package bin
 Summary: bin components for the gnuplot package.
@@ -96,10 +96,10 @@ man components for the gnuplot package.
 
 
 %prep
-%setup -q -n gnuplot-5.4.10
-cd %{_builddir}/gnuplot-5.4.10
+%setup -q -n gnuplot-6.0.0
+cd %{_builddir}/gnuplot-6.0.0
 pushd ..
-cp -a gnuplot-5.4.10 buildavx2
+cp -a gnuplot-6.0.0 buildavx2
 popd
 
 %build
@@ -107,7 +107,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1701961970
+export SOURCE_DATE_EPOCH=1704137826
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -152,7 +152,7 @@ FFLAGS="$CLEAR_INTERMEDIATE_FFLAGS"
 FCFLAGS="$CLEAR_INTERMEDIATE_FCFLAGS"
 ASFLAGS="$CLEAR_INTERMEDIATE_ASFLAGS"
 LDFLAGS="$CLEAR_INTERMEDIATE_LDFLAGS"
-export SOURCE_DATE_EPOCH=1701961970
+export SOURCE_DATE_EPOCH=1704137826
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/gnuplot
 cp %{_builddir}/gnuplot-%{version}/Copyright %{buildroot}/usr/share/package-licenses/gnuplot/414913c1ed698f7c8f0a08c0e5d447c8bd0d66f4 || :
@@ -173,45 +173,45 @@ popd
 
 %files data
 %defattr(-,root,root,-)
-/usr/share/gnuplot/5.4/PostScript/8859-1.ps
-/usr/share/gnuplot/5.4/PostScript/8859-15.ps
-/usr/share/gnuplot/5.4/PostScript/8859-2.ps
-/usr/share/gnuplot/5.4/PostScript/8859-9.ps
-/usr/share/gnuplot/5.4/PostScript/aglfn.txt
-/usr/share/gnuplot/5.4/PostScript/cp1250.ps
-/usr/share/gnuplot/5.4/PostScript/cp1251.ps
-/usr/share/gnuplot/5.4/PostScript/cp1252.ps
-/usr/share/gnuplot/5.4/PostScript/cp437.ps
-/usr/share/gnuplot/5.4/PostScript/cp850.ps
-/usr/share/gnuplot/5.4/PostScript/cp852.ps
-/usr/share/gnuplot/5.4/PostScript/koi8r.ps
-/usr/share/gnuplot/5.4/PostScript/koi8u.ps
-/usr/share/gnuplot/5.4/PostScript/prologue.ps
-/usr/share/gnuplot/5.4/PostScript/utf-8.ps
-/usr/share/gnuplot/5.4/app-defaults/Gnuplot
-/usr/share/gnuplot/5.4/colors_default.gp
-/usr/share/gnuplot/5.4/colors_mono.gp
-/usr/share/gnuplot/5.4/colors_podo.gp
-/usr/share/gnuplot/5.4/gnuplot.gih
-/usr/share/gnuplot/5.4/gnuplotrc
-/usr/share/gnuplot/5.4/js/README
-/usr/share/gnuplot/5.4/js/canvasmath.js
-/usr/share/gnuplot/5.4/js/canvastext.js
-/usr/share/gnuplot/5.4/js/gnuplot_common.js
-/usr/share/gnuplot/5.4/js/gnuplot_dashedlines.js
-/usr/share/gnuplot/5.4/js/gnuplot_mouse.css
-/usr/share/gnuplot/5.4/js/gnuplot_mouse.js
-/usr/share/gnuplot/5.4/js/gnuplot_svg.js
-/usr/share/gnuplot/5.4/js/gnuplot_svg_2018.js
-/usr/share/gnuplot/5.4/js/grid.png
-/usr/share/gnuplot/5.4/js/help.png
-/usr/share/gnuplot/5.4/js/nextzoom.png
-/usr/share/gnuplot/5.4/js/previouszoom.png
-/usr/share/gnuplot/5.4/js/return.png
-/usr/share/gnuplot/5.4/js/textzoom.png
-/usr/share/gnuplot/5.4/lua/gnuplot-tikz.lua
-/usr/share/gnuplot/5.4/qt/qtgnuplot_fr.qm
-/usr/share/gnuplot/5.4/qt/qtgnuplot_ja.qm
+/usr/share/gnuplot/6.0/PostScript/8859-1.ps
+/usr/share/gnuplot/6.0/PostScript/8859-15.ps
+/usr/share/gnuplot/6.0/PostScript/8859-2.ps
+/usr/share/gnuplot/6.0/PostScript/8859-9.ps
+/usr/share/gnuplot/6.0/PostScript/aglfn.txt
+/usr/share/gnuplot/6.0/PostScript/cp1250.ps
+/usr/share/gnuplot/6.0/PostScript/cp1251.ps
+/usr/share/gnuplot/6.0/PostScript/cp1252.ps
+/usr/share/gnuplot/6.0/PostScript/cp437.ps
+/usr/share/gnuplot/6.0/PostScript/cp850.ps
+/usr/share/gnuplot/6.0/PostScript/cp852.ps
+/usr/share/gnuplot/6.0/PostScript/koi8r.ps
+/usr/share/gnuplot/6.0/PostScript/koi8u.ps
+/usr/share/gnuplot/6.0/PostScript/prologue.ps
+/usr/share/gnuplot/6.0/PostScript/utf-8.ps
+/usr/share/gnuplot/6.0/app-defaults/Gnuplot
+/usr/share/gnuplot/6.0/colors_default.gp
+/usr/share/gnuplot/6.0/colors_mono.gp
+/usr/share/gnuplot/6.0/colors_podo.gp
+/usr/share/gnuplot/6.0/gnuplot.gih
+/usr/share/gnuplot/6.0/gnuplotrc
+/usr/share/gnuplot/6.0/js/README
+/usr/share/gnuplot/6.0/js/canvasmath.js
+/usr/share/gnuplot/6.0/js/canvastext.js
+/usr/share/gnuplot/6.0/js/gnuplot_common.js
+/usr/share/gnuplot/6.0/js/gnuplot_dashedlines.js
+/usr/share/gnuplot/6.0/js/gnuplot_mouse.css
+/usr/share/gnuplot/6.0/js/gnuplot_mouse.js
+/usr/share/gnuplot/6.0/js/gnuplot_svg.js
+/usr/share/gnuplot/6.0/js/gnuplot_svg_2018.js
+/usr/share/gnuplot/6.0/js/grid.png
+/usr/share/gnuplot/6.0/js/help.png
+/usr/share/gnuplot/6.0/js/nextzoom.png
+/usr/share/gnuplot/6.0/js/previouszoom.png
+/usr/share/gnuplot/6.0/js/return.png
+/usr/share/gnuplot/6.0/js/textzoom.png
+/usr/share/gnuplot/6.0/lua/gnuplot-tikz.lua
+/usr/share/gnuplot/6.0/qt/qtgnuplot_fr.qm
+/usr/share/gnuplot/6.0/qt/qtgnuplot_ja.qm
 /usr/share/texmf-local/tex/latex/gnuplot/gnuplot-lua-tikz-common.tex
 /usr/share/texmf-local/tex/latex/gnuplot/gnuplot-lua-tikz.sty
 /usr/share/texmf-local/tex/latex/gnuplot/gnuplot-lua-tikz.tex
@@ -220,10 +220,10 @@ popd
 
 %files libexec
 %defattr(-,root,root,-)
-/V3/usr/libexec/gnuplot/5.4/gnuplot_qt
-/V3/usr/libexec/gnuplot/5.4/gnuplot_x11
-/usr/libexec/gnuplot/5.4/gnuplot_qt
-/usr/libexec/gnuplot/5.4/gnuplot_x11
+/V3/usr/libexec/gnuplot/6.0/gnuplot_qt
+/V3/usr/libexec/gnuplot/6.0/gnuplot_x11
+/usr/libexec/gnuplot/6.0/gnuplot_qt
+/usr/libexec/gnuplot/6.0/gnuplot_x11
 
 %files license
 %defattr(0644,root,root,0755)
@@ -232,4 +232,5 @@ popd
 
 %files man
 %defattr(0644,root,root,0755)
+/usr/share/man/ja/man1/gnuplot.1
 /usr/share/man/man1/gnuplot.1
