@@ -7,7 +7,7 @@ Configure miss: MS-DOS/djgpp/libGRX
 Configure miss: Mac OS X
 Configure miss: Mac OS X
 Configure miss: amos libraries using LDFLAGS: -Wl,--build-id=sha1 -L/usr/lib -lcerf  ... checking for library containing zairy_
-Configure miss: amos libraries using LDFLAGS: -Wl,--build-id=sha1 -m64 -march=x86-64-v3  -L/usr/lib -lcerf  ... checking for library containing zairy_
+Configure miss: amos libraries using LDFLAGS: -Wl,--build-id=sha1 -march=x86-64-v3  -L/usr/lib -lcerf  ... checking for library containing zairy_
 Configure miss: doprnt
 Configure miss: doprnt
 Configure miss: g++ option to enable C++11 features
