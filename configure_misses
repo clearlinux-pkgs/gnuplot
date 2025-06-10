@@ -12,8 +12,6 @@ Configure miss: doprnt
 Configure miss: doprnt
 Configure miss: g++ option to enable C++11 features
 Configure miss: g++ option to enable C++11 features
-Configure miss: gcc option to enable large file support
-Configure miss: gcc option to enable large file support
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: gcc options needed to detect all undeclared functions
 Configure miss: if malloc(0) returns 0
@@ -24,6 +22,8 @@ Configure miss: library containing cexint_
 Configure miss: library containing cexint_
 Configure miss: mergesort
 Configure miss: mergesort
+Configure miss: stdbool.h that conforms to C99
+Configure miss: stdbool.h that conforms to C99
 Configure miss: sys/bsdtypes.h
 Configure miss: sys/bsdtypes.h
 Configure miss: whether the compiler supports GNU Objective C
